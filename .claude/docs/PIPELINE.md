@@ -19,13 +19,13 @@
 - [x] InputHandler — mouse position → paddle target X
 
 ### Tier 2 — Core Loop
-- [ ] Create `.claude/docs/design/technical-design/<system>.md` for each Tier 2 system (copy `_template.md`)
-- [ ] PaddleController — movement, bounds, size changes
-- [ ] BallController — velocity, bounce, speed clamp
-- [ ] BrickManager — grid spawn, remaining count, win event
-- [ ] Brick — HP, VFX, PowerUp drop roll
+- [x] Create `.claude/docs/design/technical-design/<system>.md` for each Tier 2 system (copy `_template.md`)
+- [x] PaddleController — movement, bounds, size changes
+- [x] BallController — velocity, bounce, speed clamp
+- [x] BrickManager — grid spawn, remaining count, win event
+- [x] Brick — HP, VFX, PowerUp drop roll
 
-- [ ] Milestone 1 — core loop playable end-to-end
+- [x] Milestone 1 — core loop playable end-to-end
 
 ### Tier 3 — Supporting Systems
 - [ ] Create `.claude/docs/design/technical-design/<system>.md` for each Tier 3 system (copy `_template.md`)
