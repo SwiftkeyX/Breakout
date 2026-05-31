@@ -6,29 +6,29 @@
 
 | Field | Value |
 |---|---|
-| **Title** | *(working title)* |
-| **Genre** | *(e.g. 2D platformer, top-down shooter, puzzle)* |
-| **Platform** | *(e.g. PC, WebGL, mobile)* |
-| **Target audience** | *(e.g. casual, hardcore, kids)* |
-| **Estimated scope** | *(e.g. game jam prototype, vertical slice, full release)* |
+| **Title** | Breakout 2 |
+| **Genre** | Brick-breaker (Arkanoid-style) |
+| **Platform** | PC — Windows |
+| **Target audience** | Casual / arcade |
+| **Estimated scope** | Vertical slice — 3–5 levels + main menu |
 
 ## Design Pillars
 
 Three qualities that every decision must serve. If a feature doesn't serve at least one pillar, cut it.
 
-1. *(e.g. "Fast — every action feels snappy and responsive")*
-2. *(e.g. "Readable — the player always knows what's happening")*
-3. *(e.g. "Surprising — encounters feel emergent, not scripted")*
+1. **Chaotic** — Multi-ball mayhem and explosive power-ups dominate every session; the screen should feel gloriously out of control
+2. **Explosive** — Brick destruction is visceral and over-the-top; every hit should feel satisfying and loud
+3. **Fun** — Every run is short, snappy, and immediately replayable; the player should want one more attempt the moment they lose
 
 ## Core Loop
 
 Describe the moment-to-moment and session loop:
 
 ```
-[Action] → [Feedback] → [Reward] → [repeat]
+Move Paddle → Deflect Ball → Destroy Bricks → Collect PowerUps → Clear Level → Next Level → repeat
 ```
 
-*(e.g. Shoot enemies → earn coins → upgrade weapon → face harder enemies → repeat)*
+*(Ball falls below paddle → lose a Life → respawn Ball → continue until 0 Lives remain)*
 
 ## Mechanics
 
@@ -36,58 +36,63 @@ Describe the moment-to-moment and session loop:
 
 | Mechanic | Description |
 |---|---|
-| Movement | *(e.g. WASD + mouse aim, top-down)* |
-| Primary action | *(e.g. left-click to shoot)* |
-| Secondary action | *(e.g. right-click to dash)* |
-| Resource | *(e.g. health, ammo, mana)* |
+| Movement | Mouse controls Paddle horizontally along the bottom of the play area |
+| Primary action | None — the Paddle is purely reactive (no fire, no dash) |
+| Secondary action | None at base; power-ups may temporarily add abilities |
+| Resource | Lives — player starts with 3; loses 1 each time the Ball exits the bottom boundary |
 
 ### Enemies / Obstacles
 
 | Type | Behavior |
 |---|---|
-| *(Enemy A)* | *(describe AI behavior)* |
-| *(Enemy B)* | *(describe AI behavior)* |
+| Standard Brick | 1 hit point; destroyed on Ball contact; may drop a PowerUp |
+| Reinforced Brick | 2+ hit points; changes color/opacity each hit to signal remaining HP |
+| Indestructible Brick | Cannot be destroyed; acts as a permanent wall/barrier in the layout |
 
 ### Progression
 
-*(How does the player get stronger or the game get harder? e.g. wave scaling, unlocks, level-ups)*
+Each level increases difficulty: denser Brick layouts, higher proportion of Reinforced Bricks, and a faster baseline Ball speed. Later levels introduce Indestructible Bricks to create routing puzzles.
 
 ## Win / Lose Conditions
 
 | Condition | Trigger |
 |---|---|
-| **Win** | *(e.g. survive 10 waves, reach the exit, score 10,000 points)* |
-| **Lose** | *(e.g. health reaches 0, time runs out)* |
+| **Win (level)** | All destructible Bricks cleared |
+| **Win (game)** | All 3–5 levels completed |
+| **Lose** | All 3 Lives lost (Ball exits bottom boundary 3 times) |
 
 ## Levels / Scenes
 
 | Scene | Purpose |
 |---|---|
-| `MainMenu` | Title screen, start / settings / quit |
-| `Game` | Core gameplay |
-| *(add scenes)* | |
+| `MainMenu` | Title screen — Start / Quit |
+| `Game` | Core gameplay — loads level layouts 1–5 sequentially |
+| `GameOver` | End screen — shows final score, Play Again / Main Menu options |
 
 ## Art Direction
 
 | Aspect | Direction |
 |---|---|
-| **Style** | *(e.g. pixel art, low-poly 3D, flat vector)* |
-| **Palette** | *(e.g. limited 16-color, vibrant neons, muted earth tones)* |
-| **Camera** | *(e.g. orthographic 2D, perspective 3D, fixed isometric)* |
-| **Resolution / aspect** | *(e.g. 1920×1080, 16:9 locked)* |
+| **Style** | Minimalist geometric — shapes only, no textures or sprites |
+| **Palette** | Muted monochrome base (dark background, white/grey elements) with a single accent color (e.g. soft cyan) for the Ball and active PowerUps |
+| **Camera** | Orthographic 2D, fixed — no scroll or zoom |
+| **Resolution / aspect** | 1920×1080, 16:9 locked |
 
 ## Audio Direction
 
 | Aspect | Direction |
 |---|---|
-| **Music style** | *(e.g. chiptune, orchestral, lo-fi ambient)* |
-| **SFX style** | *(e.g. punchy arcade, realistic, minimal)* |
-| **Key audio moments** | *(e.g. hit feedback, level-up fanfare, death sting)* |
+| **Music style** | Ambient / atmospheric — slow evolving pads, no drums, low-key tension that escalates subtly as the level progresses |
+| **SFX style** | Minimal and clean — short, satisfying clicks and tones rather than arcade blasts |
+| **Key audio moments** | Brick break (soft pop/crack), PowerUp pickup (ascending chime), Ball lost (low thud), Level clear (gentle resolution chord) |
 
 ## Out of Scope
 
 List features explicitly excluded to prevent scope creep:
 
-- *(e.g. multiplayer)*
-- *(e.g. procedural generation)*
-- *(e.g. controller support)*
+- Multiplayer
+- Procedural level generation
+- Gamepad / controller support
+- Mobile / touch support
+- Online leaderboards
+- Unlockable cosmetics

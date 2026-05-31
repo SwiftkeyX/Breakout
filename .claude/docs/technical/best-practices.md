@@ -14,7 +14,20 @@
 <!--   - A bug was caused by a pattern and must never recur -->
 <!--   - An architectural decision was made that differs from the Unity 6 defaults below -->
 
-*(No project-critical patterns yet — add as you discover them during development.)*
+### Ball Never Stops
+
+**Rule**: After every bounce, clamp `Rigidbody2D` velocity magnitude above `minSpeed`.
+
+**Why**: Floating-point energy loss accumulates across Box2D callbacks — the Ball gradually crawls to a halt and the game becomes unresponsive. This is silent and hard to notice until playtesting.
+
+**Instead**:
+```csharp
+void OnCollisionExit2D(Collision2D col) {
+    var v = rb.linearVelocity;
+    if (v.magnitude < minSpeed)
+        rb.linearVelocity = v.normalized * minSpeed;
+}
+```
 
 <!-- Example format:
 ### [Short rule name]
