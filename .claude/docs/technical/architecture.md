@@ -2,8 +2,8 @@
 
 > The authoritative list of every script in this project, its single responsibility, and how scripts communicate. Fill this in as systems are implemented. Claude reads this before touching any existing script.
 >
-> For coding conventions and anti-patterns, see `coding-style.md`.
-> For which systems are planned and their tier, see `../design/systems-design.md`.
+> For coding conventions and anti-patterns, see `.claude/template-docs/technical/coding-style.md`.
+> For which systems are planned and their tier, see `.claude/docs/design/systems-design.md`.
 
 ## Script Table
 

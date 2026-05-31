@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+  <ui:VisualElement name="hud" style="width: 100%; height: 100%; position: absolute;">
+    <ui:VisualElement name="top-bar" style="flex-direction: row; justify-content: space-between; padding: 12px 24px; background-color: rgba(0, 0, 0, 0.4);">
+      <ui:Label name="score-label" text="SCORE  0" style="color: white; font-size: 30px;" />
+      <ui:Label name="level-label" text="LEVEL  1" style="color: white; font-size: 30px;" />
+      <ui:Label name="lives-label" text="LIVES  3" style="color: white; font-size: 30px;" />
+    </ui:VisualElement>
+  </ui:VisualElement>
+</ui:UXML>

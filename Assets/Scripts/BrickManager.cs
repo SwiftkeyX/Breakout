@@ -9,6 +9,7 @@ public class BrickManager : MonoBehaviour
     [SerializeField] private BrickData _dataReinforced;
     [SerializeField] private BrickData _dataIndestructible;
     [SerializeField] private BallController _ball;
+    [SerializeField] private PowerUpManager _powerUpManager;
 
     [SerializeField] private float _cellWidth  = 1.8f;
     [SerializeField] private float _cellHeight = 0.6f;
@@ -21,6 +22,7 @@ public class BrickManager : MonoBehaviour
     {
         if (GameManager.Instance == null) { Debug.LogWarning("BrickManager: GameManager.Instance is null."); return; }
         GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+        AudioManager.Instance?.PlayMusic();
         LoadLevel(GameManager.Instance.CurrentLevelIndex);
     }
 
@@ -33,8 +35,11 @@ public class BrickManager : MonoBehaviour
     public void OnBrickDestroyed()
     {
         _remainingBricks--;
-        if (_remainingBricks <= 0)
-            GameManager.Instance.OnLevelComplete();
+        if (_remainingBricks > 0) return;
+
+        CameraEffects.Instance?.Shake(0.20f, 0.40f);
+        AudioManager.Instance?.Play(AudioManager.Instance.SfxLevelClear);
+        GameManager.Instance.OnLevelComplete();
     }
 
     private void OnGameStateChanged(GameManager.GameState state)
@@ -75,11 +80,11 @@ public class BrickManager : MonoBehaviour
             var type = data.Grid[i];
             if (type == BrickType.None) continue;
 
-            var pos = new Vector3(startX + c * _cellWidth, _gridTop - r * _cellHeight, 0f);
-            var go  = Instantiate(_brickPrefab, pos, Quaternion.identity, transform);
+            var pos  = new Vector3(startX + c * _cellWidth, _gridTop - r * _cellHeight, 0f);
+            var go   = Instantiate(_brickPrefab, pos, Quaternion.identity, transform);
             var brick = go.GetComponent<Brick>();
             bool destructible = type != BrickType.Indestructible;
-            brick.Init(GetData(type), this, destructible);
+            brick.Init(GetData(type), this, destructible, _powerUpManager);
             if (destructible) _remainingBricks++;
             _bricks.Add(go);
         }

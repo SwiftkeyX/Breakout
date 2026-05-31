@@ -7,7 +7,7 @@
 | Requirement | Version |
 |---|---|
 | Unity Hub | latest |
-| Unity Editor | *(see `build-notes.md`)* |
+| Unity Editor | *(see `.claude/docs/process/build-notes.md`)* |
 | Claude Code CLI | latest |
 | coplay MCP | installed and connected |
 

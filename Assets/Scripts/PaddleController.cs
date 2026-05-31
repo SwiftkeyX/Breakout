@@ -22,13 +22,8 @@ public class PaddleController : MonoBehaviour
 
     void Start()
     {
-        var cam = Camera.main;
-        if (cam == null) { Debug.LogWarning("PaddleController: Camera.main is null."); return; }
-        float halfW = cam.orthographicSize * cam.aspect;
-        float halfPaddleW = _collider.bounds.extents.x;
-        _leftBound  = -halfW + halfPaddleW;
-        _rightBound =  halfW - halfPaddleW;
         transform.position = new Vector3(0f, PADDLE_Y, 0f);
+        RecalculateBounds();
     }
 
     void FixedUpdate()
@@ -36,5 +31,21 @@ public class PaddleController : MonoBehaviour
         if (_inputHandler == null) return;
         float targetX = Mathf.Clamp(_inputHandler.PaddleTargetX, _leftBound, _rightBound);
         _rb.MovePosition(new Vector2(targetX, PADDLE_Y));
+    }
+
+    public void SetWidth(float newScaleX)
+    {
+        transform.localScale = new Vector3(newScaleX, transform.localScale.y, 1f);
+        RecalculateBounds();
+    }
+
+    private void RecalculateBounds()
+    {
+        var cam = Camera.main;
+        if (cam == null) { Debug.LogWarning("PaddleController: Camera.main is null."); return; }
+        float halfW = cam.orthographicSize * cam.aspect;
+        float halfPaddleW = _collider.bounds.extents.x;
+        _leftBound  = -halfW + halfPaddleW;
+        _rightBound =  halfW - halfPaddleW;
     }
 }

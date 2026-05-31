@@ -50,15 +50,20 @@ public class BallController : MonoBehaviour
                 -1f, 1f);
             float angle = norm * MAX_BOUNCE_ANGLE * Mathf.Deg2Rad;
             _rb.linearVelocity = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle)) * _currentSpeed;
+            AudioManager.Instance?.Play(AudioManager.Instance.SfxHitPaddle);
             return;
         }
         _rb.linearVelocity = _rb.linearVelocity.normalized * _currentSpeed;
         ClampMinSpeed();
+        if (col.gameObject.CompareTag("Wall"))
+            AudioManager.Instance?.Play(AudioManager.Instance.SfxHitWall);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("DeathZone")) return;
+        CameraEffects.Instance?.Shake(0.25f, 0.35f);
+        AudioManager.Instance?.Play(AudioManager.Instance.SfxBallLost);
         if (GameManager.Instance != null) GameManager.Instance.OnBallLost();
         StartCoroutine(RespawnAfterDelay());
     }

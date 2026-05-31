@@ -28,16 +28,16 @@
 - [x] Milestone 1 — core loop playable end-to-end
 
 ### Tier 3 — Supporting Systems
-- [ ] Create `.claude/docs/design/technical-design/<system>.md` for each Tier 3 system (copy `_template.md`)
-- [ ] PowerUpManager — falling drops, pickup, timed effects
-- [ ] ScoreManager — score, lives, events
-- [ ] UIManager — HUD, menus (UI Toolkit)
+- [x] Create `.claude/docs/design/technical-design/<system>.md` for each Tier 3 system (copy `_template.md`)
+- [x] PowerUpManager — falling drops, pickup, timed effects
+- [x] ScoreManager — score, lives, events
+- [x] UIManager — HUD, menus (UI Toolkit)
 
-- [ ] Milestone 2 — all features in, content complete
+- [x] Milestone 2 — all features in, content complete
 
 ## Phase 3 — Beta
 
-- [ ] Juice pass — screen shake, particles, hit-stop, SFX, music, UI animations
+- [x] Juice pass — screen shake, particles, hit-stop, SFX, music, UI animations
 - [ ] Feel tuning — tweak values via ScriptableObjects/Inspector
 - [ ] Difficulty tuning — curve, pacing, escalation
 - [ ] Bug pass — all known issues fixed (`.claude/docs/process/known-issues.md` clear)

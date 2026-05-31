@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public enum GameState { MainMenu, Playing, LevelComplete, GameOver }
 
     public event Action<GameState> OnGameStateChanged;
+    public event Action<int> OnLivesChanged;
 
     public GameState State { get; private set; }
     public int Lives { get; private set; }
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
+        Lives = STARTING_LIVES;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -27,6 +29,7 @@ public class GameManager : MonoBehaviour
     {
         Lives = STARTING_LIVES;
         CurrentLevelIndex = 0;
+        ScoreManager.Instance?.Reset();
         SetState(GameState.Playing);
         SceneLoader.Load(SceneLoader.GAME);
     }
@@ -34,6 +37,7 @@ public class GameManager : MonoBehaviour
     public void OnBallLost()
     {
         Lives--;
+        OnLivesChanged?.Invoke(Lives);
         if (Lives <= 0) TriggerGameOver();
     }
 
