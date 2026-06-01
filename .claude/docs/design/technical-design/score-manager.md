@@ -1,7 +1,7 @@
 # ScoreManager
 
 > **Status**: Approved
-> **Last Updated**: 2026-05-31
+> **Last Updated**: 2026-06-01
 > **Implements Pillar**: Fun — visible score feedback makes every brick feel rewarding
 
 ## Summary
@@ -38,7 +38,7 @@ Every brick the player hits flashes a score increase in the HUD. Over the course
 | System | Interaction |
 |---|---|
 | `GameManager` | Hosts ScoreManager; calls `Reset()` on `StartGame()` |
-| `Brick` | Calls `ScoreManager.Instance.AddScore(data.PointValue)` on death |
+| `BrickManager` | Calls `ScoreManager.Instance.AddScore(data.PointValue)` on brick death |
 | `UIManager` | Subscribes to `OnScoreChanged` to update HUD label |
 
 ---

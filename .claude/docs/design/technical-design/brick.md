@@ -1,12 +1,12 @@
 # Brick
 
 > **Status**: Approved
-> **Last Updated**: 2026-05-31
+> **Last Updated**: 2026-06-01
 > **Implements Pillar**: Explosive — every brick hit is a visible, satisfying destruction event
 
 ## Summary
 
-Brick is a MonoBehaviour on each Brick prefab instance. It tracks hit points from its `BrickData`, updates its `SpriteRenderer` color on damage, and on death notifies BrickManager, stubs ScoreManager (Tier 3), and stubs PowerUpManager (Tier 3).
+Brick is a MonoBehaviour on each Brick prefab instance. It tracks hit points from its `BrickData`, updates its `SpriteRenderer` color on damage, and reports each hit/death up to BrickManager. It is a dumb entity: it owns no effects, scoring, or drops — BrickManager is the coordinator for all of those. Its only outward dependency is the `BrickManager` reference passed to `Init()`.
 
 > **Quick reference** — Layer: `Core Loop` · Priority: `MVP` · Key deps: `BrickData`, `BrickManager`
 
@@ -30,9 +30,10 @@ Every brick that gets hit responds visually — Reinforced bricks darken, Standa
 2. `HitPoints` and `PointValue` come from `BrickData` — never hardcoded.
 3. `OnCollisionEnter2D` calls `TakeDamage(1)`. If `_destructible == false`, the call is skipped.
 4. On damage, `SpriteRenderer.color` lerps from `DamagedColor` to `FullHealthColor` based on remaining HP fraction.
-5. When `_hp <= 0`, Brick calls `_manager.OnBrickDestroyed()`, then destroys itself.
-6. `ScoreManager.Instance.AddScore()` and `PowerUpManager.Instance.TrySpawnDrop()` are left as TODO stubs for Tier 3.
-7. Brick never calls `FindObjectOfType` — all references come from `Init()`.
+5. When `_hp <= 0`, Brick calls `_manager.OnBrickDestroyed(_data, transform.position)`, then destroys itself.
+6. When a hit is survived (`_hp > 0`), Brick calls `_manager.OnBrickDamaged()` so the manager plays hit feedback.
+7. Brick references no other system — no CameraEffects, ParticlePool, AudioManager, ScoreManager, or PowerUpManager. Score, drops, and all juice are BrickManager's responsibility.
+8. Brick never calls `FindObjectOfType` — its only reference (`BrickManager`) comes from `Init()`.
 
 ### States and Transitions
 
@@ -42,10 +43,8 @@ No state machine — Brick is stateless between collisions.
 
 | System | Interaction |
 |---|---|
-| `BrickManager` | Calls `OnBrickDestroyed()` on death; reference passed via `Init()` |
+| `BrickManager` | Calls `OnBrickDestroyed(data, position)` on death and `OnBrickDamaged()` on a survived hit; reference passed via `Init()` |
 | `BallController` | Collision resolved by Unity physics; `OnCollisionEnter2D` fires on Brick |
-| `ScoreManager` | TODO(Tier 3): `AddScore(_data.PointValue)` |
-| `PowerUpManager` | TODO(Tier 3): `TrySpawnDrop(transform.position)` |
 
 ---
 
@@ -96,11 +95,13 @@ All tuning is in `BrickData` ScriptableObject assets — none in Brick.cs.
 
 ## Visual / Audio Requirements
 
-| Event | Visual | Audio | Priority |
-|---|---|---|---|
-| Hit (Reinforced, HP > 1) | Color darkens toward DamagedColor | Soft crack SFX | MVP |
-| Death (any destructible) | GameObject destroyed | Pop/crack SFX | MVP |
-| Death (VFX) | Particle burst (Tier 3) | — | Polish |
+> Brick itself only drives the damage-color lerp on its own SpriteRenderer. Every other effect below (SFX, particles, hitstop, shake) is produced by **BrickManager** in `OnBrickDamaged()` / `OnBrickDestroyed()` — Brick just reports the event.
+
+| Event | Visual | Audio | Owner | Priority |
+|---|---|---|---|---|
+| Hit (Reinforced, HP > 1) | Color darkens toward DamagedColor | Soft crack SFX | Brick (color) + BrickManager (SFX/hitstop) | MVP |
+| Death (any destructible) | GameObject destroyed | Pop/crack SFX | BrickManager | MVP |
+| Death (VFX) | Particle burst | — | BrickManager | Polish |
 
 ---
 
@@ -109,7 +110,7 @@ All tuning is in `BrickData` ScriptableObject assets — none in Brick.cs.
 - [ ] Standard brick destroyed in 1 hit
 - [ ] Reinforced brick changes color on first hit, destroyed on second
 - [ ] Indestructible brick takes no damage
-- [ ] `BrickManager.OnBrickDestroyed()` called exactly once per destroyed brick
+- [ ] `BrickManager.OnBrickDestroyed(data, position)` called exactly once per destroyed brick
 - [ ] No hardcoded HP values — all from BrickData
 - [ ] No `FindObjectOfType` in implementation
 

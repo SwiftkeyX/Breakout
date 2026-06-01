@@ -1,7 +1,7 @@
 # BrickManager
 
 > **Status**: Approved
-> **Last Updated**: 2026-05-31
+> **Last Updated**: 2026-06-01
 > **Implements Pillar**: Fun — clean level transitions keep the run feeling snappy and continuous
 
 ## Summary
@@ -14,7 +14,7 @@ BrickManager reads a `LevelData` ScriptableObject and instantiates a Brick grid 
 
 ## Overview
 
-BrickManager is a MonoBehaviour (not a singleton — GameManager is the only permitted singleton). Brick objects hold a reference to BrickManager passed at spawn time; they call `OnBrickDestroyed()` directly when they die.
+BrickManager is a MonoBehaviour (not a singleton — GameManager is the only permitted singleton). Brick objects hold a reference to BrickManager passed at spawn time. Bricks stay dumb: on a surviving hit they call `OnBrickDamaged()`, and on death they call `OnBrickDestroyed(data, position)`. BrickManager is the coordinator that owns every resulting effect — camera hitstop/shake, particle burst, SFX, score award, and the PowerUp drop roll — so that fan-out lives in one place instead of in every Brick instance.
 
 ## Player Fantasy
 
@@ -34,6 +34,8 @@ The transition from one level to the next is instant and satisfying — the grid
 6. When `_remainingBricks` reaches 0 (from `OnBrickDestroyed` calls), BrickManager calls `GameManager.Instance.OnLevelComplete()`.
 7. All tunable values (cell size, grid top Y) are serialized Inspector fields.
 8. BrickManager is **not** a singleton — Brick holds a direct reference assigned at spawn.
+9. `OnBrickDestroyed(BrickData data, Vector3 position)` owns the full death sequence in order: camera hitstop + shake, particle burst, break SFX, `ScoreManager.AddScore(data.PointValue)`, `PowerUpManager.TrySpawnDrop(position)`, then the count decrement / level-complete check.
+10. `OnBrickDamaged()` owns the surviving-hit feedback: brief hitstop + hit SFX. Bricks never touch CameraEffects/ParticlePool/AudioManager/ScoreManager/PowerUpManager directly.
 
 ### States and Transitions
 
@@ -44,8 +46,13 @@ No explicit states — BrickManager reacts to GameManager state changes.
 | System | Interaction |
 |---|---|
 | `GameManager` | Subscribes to `OnGameStateChanged`; calls `OnLevelComplete()` when grid cleared |
-| `Brick` | Calls `OnBrickDestroyed()` on each brick death; passes `this` reference at spawn via `Init()` |
-| `BallController` | Calls `SetSpeed(baseSpeed * multiplier)` when loading each level |
+| `Brick` | Receives `OnBrickDestroyed(data, position)` / `OnBrickDamaged()`; passes `this` reference at spawn via `Init()` |
+| `BallController` | Calls `SetLevelMultiplier(multiplier)` when loading each level |
+| `CameraEffects` | Calls `HitStop()` / `Shake()` on brick hit and death |
+| `ParticlePool` | Calls `Burst(position, color)` on brick death |
+| `AudioManager` | Plays hit / break / level-clear SFX |
+| `ScoreManager` | Calls `AddScore(data.PointValue)` on brick death |
+| `PowerUpManager` | Calls `TrySpawnDrop(position)` on brick death |
 | `LevelData` | Reads `Rows`, `Columns`, `Grid[]`, `BallSpeedMultiplier` |
 | `BrickData` | Passes correct data to each Brick via `Init()` |
 
@@ -67,9 +74,12 @@ No explicit states — BrickManager reacts to GameManager state changes.
 | System | Direction | Nature |
 |---|---|---|
 | `GameManager` | This depends on it | State trigger — reacts to state changes, calls OnLevelComplete |
-| `BallController` | This depends on it | State trigger — sets speed per level |
+| `BallController` | This depends on it | State trigger — sets level speed multiplier |
 | `LevelData` | This depends on it | Data dependency — reads grid layout |
 | `BrickData` | This depends on it | Data dependency — passes to Brick.Init |
+| `CameraEffects` / `ParticlePool` / `AudioManager` | This depends on them | Effect trigger — brick hit/death juice (optional singletons, null-guarded) |
+| `ScoreManager` | This depends on it | State trigger — awards points on brick death |
+| `PowerUpManager` | This depends on it | State trigger — rolls drops on brick death (serialized reference) |
 
 ---
 
@@ -90,6 +100,7 @@ No explicit states — BrickManager reacts to GameManager state changes.
 - [ ] Indestructible bricks are never counted in `_remainingBricks`
 - [ ] `OnDestroy` unsubscribes from `OnGameStateChanged` — no event leak
 - [ ] Level 2 grid loads after Level 1 is cleared without scene reload
+- [ ] Brick death produces particle burst, SFX, score, and drop roll — all driven by BrickManager, not Brick
 - [ ] No `FindObjectOfType` or `GameObject.Find` in implementation
 
 ---

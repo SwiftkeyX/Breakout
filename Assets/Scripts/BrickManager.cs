@@ -32,14 +32,32 @@ public class BrickManager : MonoBehaviour
             GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
     }
 
-    public void OnBrickDestroyed()
+    // A brick reached 0 HP. The manager owns all resulting effects, scoring,
+    // power-up drops, and level progression — bricks stay dumb entities.
+    public void OnBrickDestroyed(BrickData data, Vector3 position)
     {
+        CameraEffects.Instance?.HitStop(0.06f);
+        CameraEffects.Instance?.Shake(0.08f, 0.15f);
+        var pool = ParticlePool.Instance;
+        if (pool != null) pool.Burst(position, data.FullHealthColor);
+        AudioManager.Instance?.Play(AudioManager.Instance.SfxBrickBreak);
+
+        ScoreManager.Instance?.AddScore(data.PointValue);
+        _powerUpManager?.TrySpawnDrop(position);
+
         _remainingBricks--;
         if (_remainingBricks > 0) return;
 
         CameraEffects.Instance?.Shake(0.20f, 0.40f);
         AudioManager.Instance?.Play(AudioManager.Instance.SfxLevelClear);
         GameManager.Instance.OnLevelComplete();
+    }
+
+    // A reinforced brick took a hit but survived — brief hitstop + hit SFX.
+    public void OnBrickDamaged()
+    {
+        CameraEffects.Instance?.HitStop(0.03f);
+        AudioManager.Instance?.Play(AudioManager.Instance.SfxHitBrick);
     }
 
     private void OnGameStateChanged(GameManager.GameState state)
@@ -59,7 +77,7 @@ public class BrickManager : MonoBehaviour
         var data = _levels[index];
         SpawnGrid(data);
         if (_ball != null)
-            _ball.SetSpeed(_ball.BaseSpeed * data.BallSpeedMultiplier);
+            _ball.SetLevelMultiplier(data.BallSpeedMultiplier);
     }
 
     private void ClearGrid()
@@ -84,7 +102,7 @@ public class BrickManager : MonoBehaviour
             var go   = Instantiate(_brickPrefab, pos, Quaternion.identity, transform);
             var brick = go.GetComponent<Brick>();
             bool destructible = type != BrickType.Indestructible;
-            brick.Init(GetData(type), this, destructible, _powerUpManager);
+            brick.Init(GetData(type), this, destructible);
             if (destructible) _remainingBricks++;
             _bricks.Add(go);
         }
