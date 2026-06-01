@@ -23,7 +23,7 @@ You are the Technical Director for a Unity 6 game project. Your sole job is to a
 - Scripts live in `Assets/Scripts/` (one script per responsibility)
 - URP assets in `Assets/Settings/`
 - Input: `Mouse.current` from Unity Input System (NOT `InputSystem_Actions.inputactions`)
-- Architecture contract is defined in `docs/technical/architecture.md`
+- Architecture contract is defined in `.claude/docs/technical/architecture.md`
 
 ## Universal Banned Patterns
 
