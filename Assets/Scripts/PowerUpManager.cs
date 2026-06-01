@@ -21,6 +21,23 @@ public class PowerUpManager : MonoBehaviour
     void Start()
     {
         if (_paddle != null) _paddleBaseScaleX = _paddle.transform.localScale.x;
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+    }
+
+    void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+    }
+
+    private void OnGameStateChanged(GameManager.GameState state)
+    {
+        if (state != GameManager.GameState.LevelComplete) return;
+        if (_expandCoroutine != null) { StopCoroutine(_expandCoroutine); _expandCoroutine = null; }
+        if (_slowCoroutine   != null) { StopCoroutine(_slowCoroutine);   _slowCoroutine   = null; }
+        if (_paddle != null) _paddle.SetWidth(_paddleBaseScaleX);
+        if (_ball   != null) _ball.SetSpeedModifier(1f);
     }
 
     public void TrySpawnDrop(Vector3 position)

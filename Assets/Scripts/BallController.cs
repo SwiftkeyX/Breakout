@@ -32,6 +32,20 @@ public class BallController : MonoBehaviour
     {
         _currentSpeed = EffectiveSpeed;
         GoToWaiting();
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+    }
+
+    void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+    }
+
+    private void OnGameStateChanged(GameManager.GameState state)
+    {
+        if (state == GameManager.GameState.LevelComplete)
+            GoToWaiting();
     }
 
     void Update()
