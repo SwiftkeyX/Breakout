@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -5,6 +6,12 @@ using UnityEngine.UIElements;
 public class UIManager : MonoBehaviour
 {
     private UIDocument _doc;
+
+    // Held so they can be detached in OnDestroy — these subscribe to persistent
+    // singletons (GameManager/ScoreManager) that outlive this scene's UI.
+    private Action<int> _scoreHandler;
+    private Action<int> _livesHandler;
+    private Action<GameManager.GameState> _stateHandler;
 
     void Awake() => _doc = GetComponent<UIDocument>();
 
@@ -29,19 +36,35 @@ public class UIManager : MonoBehaviour
     {
         UpdateHUD(root);
         if (ScoreManager.Instance != null)
-            ScoreManager.Instance.OnScoreChanged += _ =>
+        {
+            _scoreHandler = _ =>
             {
                 UpdateHUD(root);
                 PunchScale(root.Q<Label>("score-label"));
             };
+            ScoreManager.Instance.OnScoreChanged += _scoreHandler;
+        }
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.OnLivesChanged += _ =>
+            _livesHandler = _ =>
             {
                 UpdateHUD(root);
                 FlashRed(root.Q<Label>("lives-label"));
             };
-            GameManager.Instance.OnGameStateChanged += _ => UpdateHUD(root);
+            _stateHandler = _ => UpdateHUD(root);
+            GameManager.Instance.OnLivesChanged += _livesHandler;
+            GameManager.Instance.OnGameStateChanged += _stateHandler;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (ScoreManager.Instance != null && _scoreHandler != null)
+            ScoreManager.Instance.OnScoreChanged -= _scoreHandler;
+        if (GameManager.Instance != null)
+        {
+            if (_livesHandler != null) GameManager.Instance.OnLivesChanged -= _livesHandler;
+            if (_stateHandler != null) GameManager.Instance.OnGameStateChanged -= _stateHandler;
         }
     }
 
@@ -53,7 +76,7 @@ public class UIManager : MonoBehaviour
         var gm = GameManager.Instance;
         if (gm == null) return;
 
-        if (gm.CurrentLevelIndex >= 5)
+        if (gm.CurrentLevelIndex >= gm.TotalLevels)
             root.Q<Label>("result-label").text = "YOU WIN";
 
         root.Q<Button>("restart-button").clicked += () => gm.RestartGame();

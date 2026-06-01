@@ -1,7 +1,7 @@
 # UIManager
 
 > **Status**: Approved
-> **Last Updated**: 2026-05-31
+> **Last Updated**: 2026-06-01
 > **Implements Pillar**: Fun — clear feedback and fast restarts keep the game immediately replayable
 
 ## Summary
@@ -22,6 +22,8 @@ UIManager is a per-scene MonoBehaviour that reads the active UIDocument and bind
 4. UIManager subscribes to events but never holds a direct Inspector reference to GameManager/ScoreManager (cross-scene safe via static Instance access).
 5. HUD updates on `ScoreManager.OnScoreChanged`, `GameManager.OnLivesChanged`, and `GameManager.OnGameStateChanged`.
 6. GameOver screen reads final score from `ScoreManager.Instance.Score` at binding time.
+7. HUD handlers are cached in fields and detached in `OnDestroy`. This is mandatory: the events live on the persistent (`DontDestroyOnLoad`) GameManager/ScoreManager, so without unsubscribing, every scene load would stack new handlers that fire into the previous scene's destroyed `VisualElement`s.
+8. The GameOver "YOU WIN" check reads `GameManager.Instance.TotalLevels` — never a hardcoded level count.
 
 ### Layouts
 
@@ -46,8 +48,9 @@ UIManager is a per-scene MonoBehaviour that reads the active UIDocument and bind
 - [ ] HUD score label updates immediately on brick destruction
 - [ ] HUD lives label updates immediately on ball lost
 - [ ] GameOver shows correct final score
-- [ ] GameOver shows "YOU WIN" instead of "GAME OVER" when all 5 levels cleared
+- [ ] GameOver shows "YOU WIN" instead of "GAME OVER" when `CurrentLevelIndex >= GameManager.TotalLevels`
 - [ ] Play Again and Main Menu buttons work correctly
+- [ ] `OnDestroy` detaches every handler added to GameManager/ScoreManager — no leak across scene loads
 - [ ] No UGUI Canvas components anywhere
 
 ---
