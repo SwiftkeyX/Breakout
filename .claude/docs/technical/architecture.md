@@ -1,24 +1,9 @@
 # Architecture Contract
 
-> The authoritative list of every script in this project, its single responsibility, and how scripts communicate. Fill this in as systems are implemented. Claude reads this before touching any existing script.
+> The authoritative record of how scripts in this project communicate. Fill this in as systems are implemented. Claude reads this before touching any existing script.
 >
+> For system responsibilities, dependencies, and tier assignments, see `.claude/docs/design/systems-design.md`.
 > For coding conventions and anti-patterns, see `.claude/template-docs/technical/coding-style.md`.
-> For which systems are planned and their tier, see `.claude/docs/design/systems-design.md`.
-
-## Script Table
-
-| Script | Responsibility |
-|---|---|
-| **GameManager** | Singleton; owns `GameState` enum; holds lives count and current level index; entry point for game-wide state changes |
-| **SceneLoader** | Wraps `SceneManager.LoadSceneAsync`; called by GameManager to transition between MainMenu, Game, and GameOver |
-| **InputHandler** | Reads `Mouse.current.position` each frame via Input System; exposes `PaddleTargetX` (world space) to PaddleController |
-| **PaddleController** | Moves Paddle transform to `InputHandler.PaddleTargetX`; clamps to play area bounds; exposes `Width` property for PowerUp size changes |
-| **BallController** | Moves Ball via `Rigidbody2D`; normalises and scales velocity after each bounce; clamps speed above `minSpeed`; exposes `Speed` for PowerUp modifications |
-| **BrickManager** | Instantiates Brick grid from level data ScriptableObject; tracks `remainingBricks` counter; fires `OnAllBricksCleared` event when counter hits zero |
-| **Brick** | Component on each Brick prefab; tracks `hitPoints`; on taking damage decrements HP, updates visual, and on death instantiates destruction VFX and calls `PowerUpManager.TrySpawnDrop` |
-| **PowerUpManager** | Singleton; owns pool of falling PowerUp objects; moves them downward; on Paddle collision applies timed effect and starts revert coroutine |
-| **ScoreManager** | Singleton; tracks `score` and `lives`; exposes `AddScore(int)` and `LoseLife()`; broadcasts `OnScoreChanged` and `OnLivesChanged` events; calls `GameManager.OnGameOver()` when lives reach zero |
-| **UIManager** | Subscribes to ScoreManager events; updates UI Toolkit labels for score, lives, level; shows/hides menu screens |
 
 ## Communication Patterns
 
