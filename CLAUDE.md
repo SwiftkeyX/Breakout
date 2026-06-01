@@ -48,7 +48,7 @@ For one-off doc lookups, consult `.claude/docs/index.md`.
 
 **Use `template-docs/` as structural reference when creating project docs.** When creating or updating any doc in `.claude/docs/`, read the corresponding file in `.claude/template-docs/` first to follow the correct structure and format. Never write project-specific content into `.claude/template-docs/`.
 
-**Regenerate the project snapshot after structural changes.** Call `GenerateProjectSnapshot.Execute()` via `execute_script` after: adding/removing GameObjects in any scene, adding/removing scripts in `Assets/Scripts/`, adding/removing prefabs or audio assets.
+**Regenerate the project snapshot after add/edit/delete in Unity Editor.** Call `GenerateProjectSnapshot.Execute()` via `execute_script` after: adding/removing GameObjects in any scene, adding/removing scripts in `Assets/Scripts/`, adding/removing prefabs or audio assets.
 
 **Verify before changing position.** When a user challenges a factual or technical claim:
 1. Acknowledge the disagreement

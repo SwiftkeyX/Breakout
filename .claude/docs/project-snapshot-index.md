@@ -1,6 +1,6 @@
 ﻿# Project Snapshot Index
 
-_Generated: 2026-05-31 16:55 — run `GenerateProjectSnapshot.Execute()` to refresh._
+_Generated: 2026-06-01 12:00 — run `GenerateProjectSnapshot.Execute()` to refresh._
 
 > Regenerate after: adding/removing GameObjects in any scene, adding/removing scripts, prefabs, or audio assets.
 
