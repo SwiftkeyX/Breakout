@@ -1,7 +1,7 @@
 # InputHandler
 
 > **Status**: Approved
-> **Last Updated**: 2026-05-31
+> **Last Updated**: 2026-06-01
 > **Implements Pillar**: Chaotic — precise mouse tracking lets the player stay in control even when the screen is chaos
 
 ## Summary
@@ -14,7 +14,7 @@ InputHandler reads raw mouse position each frame via the Input System package an
 
 ## Overview
 
-All input in this project is read through InputHandler. No other script reads from `Mouse.current` directly. PaddleController reads `InputHandler.PaddleTargetX` each frame — it does not own input logic.
+Paddle-movement input is read through InputHandler: PaddleController reads `InputHandler.PaddleTargetX` each frame and does not own input logic. The one exception is ball launch — BallController reads `Mouse.current.leftButton` directly for the click-to-launch action.
 
 ## Player Fantasy
 
@@ -30,7 +30,7 @@ The Paddle tracks the mouse with zero perceived lag — the player feels directl
 2. Mouse position is read from `Mouse.current.position.ReadValue()` — never from the legacy `Input` class.
 3. Screen space is converted to world space using `Camera.main.ScreenToWorldPoint`.
 4. Only the X component is exposed — Y position of the Paddle is fixed and not controlled by input.
-5. If `Camera.main` is null, InputHandler logs a warning in `Awake` and skips the `Update` calculation — no null reference exception.
+5. If `Camera.main` is null (logged in `Awake`) **or** `Mouse.current` is null, InputHandler skips the `Update` calculation — no null reference exception.
 6. PaddleController holds a direct Inspector reference to InputHandler — no `FindObjectOfType`.
 
 ### States and Transitions
@@ -71,6 +71,7 @@ PaddleTargetX = worldPos.x
 | Scenario | Expected Behavior | Rationale |
 |---|---|---|
 | `Camera.main` is null at Awake | Log warning, skip Update | Prevents NullReferenceException spam |
+| `Mouse.current` is null (no mouse device) | Skip Update calculation that frame | Null-guarded — no NullReferenceException |
 | Mouse outside screen bounds | Unity clamps mouse to window; value follows | No special handling needed |
 | Game paused (`Time.timeScale = 0`) | `Update` still runs; input still tracked | Paddle should remain responsive during pause |
 

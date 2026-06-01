@@ -17,6 +17,10 @@ public class BallController : MonoBehaviour
     private Rigidbody2D _rb;
     private bool _waiting = true;
     private float _currentSpeed;
+    private float _levelMultiplier = 1f;
+    private float _speedModifier   = 1f;
+
+    private float EffectiveSpeed => Mathf.Max(BaseSpeed * _levelMultiplier * _speedModifier, _minSpeed);
 
     void Awake()
     {
@@ -26,13 +30,13 @@ public class BallController : MonoBehaviour
 
     void Start()
     {
-        _currentSpeed = BaseSpeed;
+        _currentSpeed = EffectiveSpeed;
         GoToWaiting();
     }
 
     void Update()
     {
-        if (_waiting && Mouse.current.leftButton.wasPressedThisFrame)
+        if (_waiting && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             Launch();
     }
 
@@ -68,9 +72,25 @@ public class BallController : MonoBehaviour
         StartCoroutine(RespawnAfterDelay());
     }
 
-    public void SetSpeed(float speed)
+    // Per-level base scaling, owned by BrickManager.
+    public void SetLevelMultiplier(float multiplier)
     {
-        _currentSpeed = Mathf.Max(speed, _minSpeed);
+        _levelMultiplier = multiplier;
+        ApplySpeed();
+    }
+
+    // Transient power-up scaling (e.g. SlowBall); 1 = no modifier.
+    public void SetSpeedModifier(float modifier)
+    {
+        _speedModifier = modifier;
+        ApplySpeed();
+    }
+
+    private void ApplySpeed()
+    {
+        _currentSpeed = EffectiveSpeed;
+        if (!_waiting && _rb.bodyType == RigidbodyType2D.Dynamic && _rb.linearVelocity != Vector2.zero)
+            _rb.linearVelocity = _rb.linearVelocity.normalized * _currentSpeed;
     }
 
     private void GoToWaiting()

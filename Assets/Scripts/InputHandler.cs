@@ -15,7 +15,7 @@ public class InputHandler : MonoBehaviour
 
     void Update()
     {
-        if (_camera == null) return;
+        if (_camera == null || Mouse.current == null) return;
         Vector2 screenPos = Mouse.current.position.ReadValue();
         Vector3 worldPos = _camera.ScreenToWorldPoint(
             new Vector3(screenPos.x, screenPos.y, _camera.nearClipPlane));
