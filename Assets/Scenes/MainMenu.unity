@@ -203,13 +203,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 317a5677a7951224097353e2ecdfc9e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
-  SfxHitBrick: {fileID: 0}
-  SfxBrickBreak: {fileID: 0}
-  SfxHitPaddle: {fileID: 0}
-  SfxHitWall: {fileID: 0}
-  SfxBallLost: {fileID: 0}
-  SfxLevelClear: {fileID: 0}
-  SfxPowerUp: {fileID: 0}
+  SfxHitBrick: {fileID: 8300000, guid: 08947c4120b9c084f8892ff37764683f, type: 3}
+  SfxBrickBreak: {fileID: 8300000, guid: cca24ad79100aef4592f5b1cbfc24fea, type: 3}
+  SfxHitPaddle: {fileID: 8300000, guid: d3eb280ead9c3254b9587872dec01f37, type: 3}
+  SfxHitWall: {fileID: 8300000, guid: fe233d5ffc7b8fd49ab12b547a959efd, type: 3}
+  SfxBallLost: {fileID: 8300000, guid: d8904dea85efba04488869bf4c032a19, type: 3}
+  SfxLevelClear: {fileID: 8300000, guid: c38f46f887c20c94698e03a7448894b3, type: 3}
+  SfxPowerUp: {fileID: 8300000, guid: 22405c51042c8674598cf49ba1424e71, type: 3}
   MusicLoop: {fileID: 0}
   _sfxVolume: 0.8
   _musicVolume: 0.4

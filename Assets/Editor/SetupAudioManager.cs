@@ -1,20 +1,26 @@
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SetupAudioManager
 {
     public static void Execute()
     {
-        // Remove any existing AudioManager to avoid duplicates
-        var existing = GameObject.Find("AudioManager");
-        if (existing != null)
+        // Remove any stray standalone AudioManager GameObject (created by mistake)
+        var stray = GameObject.Find("AudioManager");
+        if (stray != null && stray.GetComponent<GameManager>() == null)
         {
-            Object.DestroyImmediate(existing);
-            Debug.Log("SetupAudioManager: removed old AudioManager");
+            Object.DestroyImmediate(stray);
+            Debug.Log("SetupAudioManager: removed stray AudioManager GameObject");
         }
 
-        var go = new GameObject("AudioManager");
-        var am = go.AddComponent<AudioManager>();
+        // Assign clips to the AudioManager component on GameManager
+        var gm = GameObject.Find("GameManager");
+        if (gm == null) { Debug.LogError("SetupAudioManager: GameManager not found."); return; }
+
+        var am = gm.GetComponent<AudioManager>();
+        if (am == null) { Debug.LogError("SetupAudioManager: AudioManager component not on GameManager."); return; }
 
         am.SfxHitBrick   = Load("Assets/Audio/SFX/SfxHitBrick.wav");
         am.SfxBrickBreak = Load("Assets/Audio/SFX/SfxBrickBreak.wav");
@@ -24,10 +30,10 @@ public class SetupAudioManager
         am.SfxLevelClear = Load("Assets/Audio/SFX/SfxLevelClear.wav");
         am.SfxPowerUp    = Load("Assets/Audio/SFX/SfxPowerUp.wav");
 
-        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene());
+        EditorUtility.SetDirty(gm);
+        EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
 
-        Debug.Log("SetupAudioManager: AudioManager added with all 7 clips assigned.");
+        Debug.Log("SetupAudioManager: all 7 SFX clips assigned to GameManager.AudioManager.");
     }
 
     static AudioClip Load(string path)
