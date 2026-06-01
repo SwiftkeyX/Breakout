@@ -25,7 +25,7 @@
 1. `cd` into this directory
 2. Run `claude` to start a session
 3. Claude will read `CLAUDE.md` automatically on first message
-4. Run `/pipeline` to see current project status
+4. Run `/check-pipeline-stage` to see current project status
 
 ## First Run Checks
 
