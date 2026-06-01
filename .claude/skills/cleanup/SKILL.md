@@ -60,11 +60,11 @@ Check four structural sections that catalog files and drift after reorganization
 - For each table row, verify the path in column 1 exists
 - Check each table's directory scope for unlisted files
 
-**5c. `docs/PIPELINE.md` checked tasks only**
+**5c. `.claude/docs/PIPELINE.md` checked tasks only**
 - For `- [x]` items that reference a file path: verify the file exists. A checked task referencing a missing file means the file was moved after completion.
 - Do NOT flag `- [ ]` items — future tasks referencing files not yet created is expected and correct.
 
-**5d. `docs/process/onboarding.md`**
+**5d. `.claude/template-docs/process/onboarding.md`**
 - Verify all `docs/` paths and `Assets/` paths in the Setup Steps section exist
 
 ---

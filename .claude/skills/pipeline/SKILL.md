@@ -1,4 +1,4 @@
-Read `docs/PIPELINE.md` and do the following:
+Read `.claude/docs/PIPELINE.md` and do the following:
 
 1. **Report status** — identify the current phase (the earliest phase with unchecked items) and show a progress count (e.g. "Phase 1 — Pre-production: 2/6 done").
 
