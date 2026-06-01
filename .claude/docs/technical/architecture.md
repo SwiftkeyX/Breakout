@@ -11,11 +11,14 @@ Define how scripts talk to each other. Establish this once and enforce it.
 
 | From | To | Method | Notes |
 |---|---|---|---|
-| BrickManager | GameManager | C# event — `OnAllBricksCleared` | GameManager subscribes and advances to next level or triggers win |
-| Brick | PowerUpManager | Direct method call — `PowerUpManager.Instance.TrySpawnDrop(position)` | PowerUpManager rolls and spawns the drop |
-| Brick | BrickManager | Direct method call — `BrickManager.Instance.OnBrickDestroyed()` | Decrements remaining Brick counter |
-| Brick | ScoreManager | Direct method call — `ScoreManager.Instance.AddScore(points)` | Points value set in Brick ScriptableObject data |
-| BallController | ScoreManager | — | No direct link; Ball does not score — Brick does on destruction |
+| BrickManager | GameManager | Direct method call — `GameManager.Instance.OnLevelComplete()` | Called when remaining Brick count reaches zero |
+| Brick | BrickManager | Direct method call — `_manager.OnBrickDestroyed(data, position)` / `OnBrickDamaged()` | Brick reports hits/death up; manager is held via `Init()`, not a singleton |
+| BrickManager | ScoreManager | Direct method call — `ScoreManager.Instance.AddScore(points)` | Awarded on brick death; point value from `BrickData` |
+| BrickManager | PowerUpManager | Direct method call — `TrySpawnDrop(position)` | Manager rolls and spawns the drop on brick death |
+| BrickManager | CameraEffects / ParticlePool / AudioManager | Direct method call | Brick hit/death juice — hitstop, shake, particle burst, SFX |
+| BallController | ScoreManager | — | No direct link; Ball does not score — BrickManager does on destruction |
+| BrickManager | BallController | Direct method call — `SetLevelMultiplier(multiplier)` | Per-level base-speed scaling |
+| PowerUpManager | BallController | Direct method call — `SetSpeedModifier(factor)` | Transient SlowBall scaling; composes with the level multiplier |
 | PaddleController | PowerUpManager | — | PowerUpManager calls into PaddleController to apply/revert size effects |
 | ScoreManager | GameManager | Direct method call — `GameManager.Instance.OnGameOver()` | Called when lives reach zero |
 | ScoreManager | UIManager | C# event — `OnScoreChanged`, `OnLivesChanged` | UIManager updates HUD labels |
