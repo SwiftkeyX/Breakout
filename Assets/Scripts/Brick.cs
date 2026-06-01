@@ -54,7 +54,8 @@ public class Brick : MonoBehaviour
     {
         CameraEffects.Instance?.HitStop(0.06f);
         CameraEffects.Instance?.Shake(0.08f, 0.15f);
-        ParticlePool.Instance?.Burst(transform.position, _data.FullHealthColor);
+        var pool = ParticlePool.Instance;
+        if (pool != null) pool.Burst(transform.position, _data.FullHealthColor);
         AudioManager.Instance?.Play(AudioManager.Instance.SfxBrickBreak);
 
         _manager.OnBrickDestroyed();
