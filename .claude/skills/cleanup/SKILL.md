@@ -52,9 +52,10 @@ Collect all broken references (source file, line number, raw text, resolved path
 
 Check four structural sections that catalog files and drift after reorganizations:
 
-**5a. `CLAUDE.md` "Project-Specific Rules" bullet list**
+**5a. `.claude/docs/index.md` entry list**
+- Read `.claude/docs/index.md` and extract every path reference (Pattern A)
 - Verify each listed path exists on disk
-- Run `Glob docs/**/*.md` and `Glob docs/*.md` — flag any doc file NOT in the bullet list as a gap (newly added file not yet indexed)
+- Run `Glob .claude/docs/**/*.md` and `Glob .claude/docs/*.md` — flag any doc file NOT referenced in `index.md` as a gap (newly added file not yet indexed)
 
 **5b. `README.md` file tables**
 - For each table row, verify the path in column 1 exists
@@ -138,10 +139,10 @@ Do not touch paths flagged MANUAL (zero matches or multiple matches).
 
 ## Step 9 — Update index sections (if user said yes)
 
-**CLAUDE.md doc index:**
-1. Read CLAUDE.md
-2. Build corrected bullet list: keep existing valid entries, remove entries for missing files, add entries for new files (extract description from the file's first `#` heading line)
-3. Edit to replace only the bullet block — leave all surrounding content untouched
+**`.claude/docs/index.md` entry list:**
+1. Read `.claude/docs/index.md`
+2. Build corrected entry list: keep existing valid entries, remove entries for missing files, add entries for new files (extract description from the file's first `#` heading line; add a "Consult when:" trigger line)
+3. Edit to replace only the affected entry — leave all surrounding content untouched
 
 **README.md tables:**
 1. Read README.md
