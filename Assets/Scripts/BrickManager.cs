@@ -15,7 +15,7 @@ public class BrickManager : MonoBehaviour
     [SerializeField] private float _cellHeight = 0.6f;
     [SerializeField] private float _gridTop    = 5.0f;
 
-    private readonly List<GameObject> _bricks = new();
+    private List<GameObject> _bricks = new();
     private int _remainingBricks;
 
     void Start()
@@ -62,7 +62,7 @@ public class BrickManager : MonoBehaviour
 
     private void OnGameStateChanged(GameManager.GameState state)
     {
-        if (state == GameManager.GameState.LevelComplete)
+        if (state == GameManager.GameState.LevelComplete && GameManager.Instance != null)
             LoadLevel(GameManager.Instance.CurrentLevelIndex);
     }
 

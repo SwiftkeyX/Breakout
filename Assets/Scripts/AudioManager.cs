@@ -41,8 +41,9 @@ public class AudioManager : MonoBehaviour
 
     public void Play(AudioClip clip)
     {
-        if (clip == null) return;
+        if (clip == null || _sfxPool == null) return;
         var src = _sfxPool[_poolIndex];
+        if (src == null) return;
         src.clip = clip;
         src.Play();
         _poolIndex = (_poolIndex + 1) % POOL_SIZE;
@@ -50,10 +51,13 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic()
     {
-        if (MusicLoop == null || _musicSource.isPlaying) return;
+        if (MusicLoop == null || _musicSource == null || _musicSource.isPlaying) return;
         _musicSource.clip = MusicLoop;
         _musicSource.Play();
     }
 
-    public void StopMusic() => _musicSource.Stop();
+    public void StopMusic()
+    {
+        if (_musicSource != null) _musicSource.Stop();
+    }
 }
