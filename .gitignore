@@ -1,6 +1,9 @@
 # Unity generated
 Library/
 Temp/
+
+# Claude Code runtime files
+.claude/scheduled_tasks.lock
 Obj/
 Build/
 Builds/
