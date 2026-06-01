@@ -17,19 +17,7 @@ Key coplay workflow:
 
 ## Project-Specific Rules
 
-Read these docs before implementing features or making design decisions:
-
-- `.claude/docs/design/game-vision.md` — full creative vision (genre, pillars, mechanics, art/audio direction)
-- `.claude/docs/design/design-decisions.md` — locked decisions, canonical terminology, spatial constraints
-- `.claude/docs/design/systems-design.md` — every system, its responsibility, dependencies, and tier
-- `.claude/docs/design/technical-design/` — per-system detailed GDDs (copy from `.claude/template-docs/design/technical-design/_template.md` for each system)
-- `.claude/docs/technical/technical-preferences.md` — engine version, platform, performance budgets, testing requirements
-- `.claude/docs/technical/best-practices.md` — project-critical patterns + Unity 6 current patterns (read before writing any code)
-- `.claude/docs/technical/architecture.md` — script responsibilities, component patterns, input conventions
-- `.claude/template-docs/technical/coding-style.md` — required patterns and anti-patterns
-- `.claude/template-docs/technical/asset-conventions.md` — folder layout, naming rules, import settings
-- `.claude/docs/process/known-issues.md` — open/fixed bugs (check before implementing related systems)
-- `.claude/docs/project-snapshot-index.md` — **read this first** — current scene hierarchies, all scripts, prefabs, and audio assets; regenerate after structural changes
+Before implementing a feature or making a design decision, consult `.claude/docs/index.md` to find the relevant doc. Look up the one that applies — do not read the entire index upfront.
 
 ## Collaboration Rules
 
@@ -40,7 +28,18 @@ Read these docs before implementing features or making design decisions:
 | **Rule** | `CLAUDE.md` or `.claude/docs/` | Invariant constraints — architecture, coding standards, Claude behavior. Read on demand. |
 | **Memory** | `memory/` (project or global) | Contextual facts that evolve. Recalled when relevant. |
 
+### Git & Commits
+
+- Never run `git add .` or stage all files indiscriminately — always stage files explicitly by name.
+- Run `git status` and `git diff` before every commit to verify exactly what is going in.
+- Create **atomic commits**: one logical change per commit. If a task touches multiple systems, split into separate commits per system.
+- Follow **Conventional Commits**: `feat(scope): description`, `fix(scope): description`, `chore(scope): description`, etc.
+- Never commit broken code — verify `check_compile_errors` passes before staging.
+- Never use `git commit -a`, `git add -A`, or `git push` to main without explicit user instruction.
+
 ### Claude Behavior
+
+**State which docs you read before starting implementation.** At the start of any implementation response, include one line: `Docs read: [filename or "none"] — [one-sentence reason]`. This makes doc-reading auditable.
 
 **Use `template-docs/` as structural reference when creating project docs.** When creating or updating any doc in `.claude/docs/`, read the corresponding file in `.claude/template-docs/` first to follow the correct structure and format. Never write project-specific content into `.claude/template-docs/`.
 
