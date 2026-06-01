@@ -1,7 +1,7 @@
 # GameManager
 
 > **Status**: Approved
-> **Last Updated**: 2026-05-31
+> **Last Updated**: 2026-06-01
 > **Implements Pillar**: Fun — short, replayable sessions require clean state ownership and fast transitions
 
 ## Summary
@@ -32,6 +32,8 @@ The player should never feel stuck — if they lose a life or clear a level, the
 4. State changes always fire `OnGameStateChanged` — no silent transitions.
 5. Lives start at `STARTING_LIVES` (3) when `StartGame()` is called. They are never modified outside GameManager.
 6. `CurrentLevelIndex` is zero-based. Level 1 is index 0.
+7. `TotalLevels` is a public read-only property exposing `TOTAL_LEVELS` — consumers (e.g. UIManager's win check) must read it instead of hardcoding the level count.
+8. `LevelComplete` is a transient signal, not a resting state: `OnLevelComplete()` fires it (BrickManager reloads the grid synchronously on that event) and then immediately re-enters `Playing`, so per-ball logic gated on `Playing` keeps working in the next level.
 
 ### States and Transitions
 
@@ -39,7 +41,7 @@ The player should never feel stuck — if they lose a life or clear a level, the
 |---|---|---|---|
 | `MainMenu` | App launch or `ReturnToMainMenu()` | `StartGame()` called | Idle; no game logic runs |
 | `Playing` | `StartGame()` or next level loaded | Ball lost or all bricks cleared | Active gameplay |
-| `LevelComplete` | All bricks cleared, more levels remain | `BrickManager` reloads layout | Brief pause before next layout |
+| `LevelComplete` | All bricks cleared, more levels remain | Re-enters `Playing` in the same call | Transient signal — `BrickManager` reloads the layout synchronously, then state returns to `Playing` |
 | `GameOver` | All lives lost or all levels cleared | `RestartGame()` or `ReturnToMainMenu()` | GameOver scene loaded |
 
 ### Interactions with Other Systems
@@ -47,7 +49,7 @@ The player should never feel stuck — if they lose a life or clear a level, the
 | System | Interaction |
 |---|---|
 | `SceneLoader` | GameManager calls `SceneLoader.Load()` for all transitions |
-| `BrickManager` | Subscribes to `OnAllBricksCleared` event; calls `OnLevelComplete()` |
+| `BrickManager` | Subscribes to `OnGameStateChanged` (reloads grid on `LevelComplete`); calls `OnLevelComplete()` when the grid is cleared |
 | `ScoreManager` | Calls `GameManager.Instance.OnGameOver()` when lives hit 0 (via `OnBallLost` flow) |
 | `UIManager` | Subscribes to `OnGameStateChanged` to show/hide screens |
 

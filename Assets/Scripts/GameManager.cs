@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     public GameState State { get; private set; }
     public int Lives { get; private set; }
     public int CurrentLevelIndex { get; private set; }
+    public int TotalLevels => TOTAL_LEVELS;
 
     private const int STARTING_LIVES = 3;
     private const int TOTAL_LEVELS = 5;
@@ -49,7 +50,10 @@ public class GameManager : MonoBehaviour
             TriggerGameOver();
             return;
         }
+        // Listeners (BrickManager) reload the grid synchronously on this event,
+        // then we resume play so per-ball logic gated on Playing keeps working.
         SetState(GameState.LevelComplete);
+        SetState(GameState.Playing);
     }
 
     public void RestartGame()
