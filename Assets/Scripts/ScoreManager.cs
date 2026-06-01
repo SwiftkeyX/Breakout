@@ -9,7 +9,11 @@ public class ScoreManager : MonoBehaviour
 
     public int Score { get; private set; }
 
-    void Awake() => Instance = this;
+    void Awake()
+    {
+        if (Instance != null) return;
+        Instance = this;
+    }
 
     public void AddScore(int amount)
     {
