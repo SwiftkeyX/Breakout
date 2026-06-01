@@ -16,6 +16,12 @@ public class PowerUpManager : MonoBehaviour
 
     private Coroutine _expandCoroutine;
     private Coroutine _slowCoroutine;
+    private float _paddleBaseScaleX = 1f;
+
+    void Start()
+    {
+        if (_paddle != null) _paddleBaseScaleX = _paddle.transform.localScale.x;
+    }
 
     public void TrySpawnDrop(Vector3 position)
     {
@@ -44,20 +50,18 @@ public class PowerUpManager : MonoBehaviour
     private IEnumerator ExpandPaddleEffect()
     {
         if (_paddle == null) yield break;
-        float original = _paddle.transform.localScale.x;
         _paddle.SetWidth(_expandScaleX);
         yield return new WaitForSeconds(_expandDuration);
-        _paddle.SetWidth(original);
+        _paddle.SetWidth(_paddleBaseScaleX);
         _expandCoroutine = null;
     }
 
     private IEnumerator SlowBallEffect()
     {
         if (_ball == null) yield break;
-        float original = _ball.BaseSpeed;
-        _ball.SetSpeed(original * _slowMultiplier);
+        _ball.SetSpeedModifier(_slowMultiplier);
         yield return new WaitForSeconds(_slowDuration);
-        _ball.SetSpeed(original);
+        _ball.SetSpeedModifier(1f);
         _slowCoroutine = null;
     }
 }

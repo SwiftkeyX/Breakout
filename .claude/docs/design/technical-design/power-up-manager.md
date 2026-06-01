@@ -1,12 +1,12 @@
 # PowerUpManager
 
 > **Status**: Approved
-> **Last Updated**: 2026-05-31
+> **Last Updated**: 2026-06-01
 > **Implements Pillar**: Chaotic — random drops that explode the rules mid-game
 
 ## Summary
 
-PowerUpManager lives in the Game scene, manages the lifecycle of falling PowerUp drops, and applies timed effects to PaddleController or BallController on pickup. Brick holds a reference passed at spawn time. Two types at Tier 3: ExpandPaddle and SlowBall. MultiBall deferred to Phase 3.
+PowerUpManager lives in the Game scene, manages the lifecycle of falling PowerUp drops, and applies timed effects to PaddleController or BallController on pickup. BrickManager holds a serialized reference and calls `TrySpawnDrop()` on brick death. Two types at Tier 3: ExpandPaddle and SlowBall. MultiBall deferred to Phase 3.
 
 > **Quick reference** — Layer: `Supporting` · Priority: `MVP` · Key deps: `PaddleController`, `BallController`
 
@@ -16,19 +16,21 @@ PowerUpManager lives in the Game scene, manages the lifecycle of falling PowerUp
 
 ### Core Rules
 
-1. PowerUpManager is NOT a singleton. BrickManager holds a serialized reference and passes it to `Brick.Init()`.
-2. `TrySpawnDrop(Vector3)` is called by Brick on death. It rolls `Random.value` against `_dropChance` (default 0.3). If pass: pick random `PowerUpType`, instantiate PowerUp prefab, call `PowerUp.Init()`.
+1. PowerUpManager is NOT a singleton. BrickManager holds a serialized reference and calls `TrySpawnDrop()` directly on brick death.
+2. `TrySpawnDrop(Vector3)` is called by BrickManager on brick death. It rolls `Random.value` against `_dropChance` (default 0.3). If pass: pick random `PowerUpType`, instantiate PowerUp prefab, call `PowerUp.Init()`.
 3. `OnPickup(PowerUpType)` is called by PowerUp on Paddle collision. Starts the appropriate coroutine.
 4. Each effect type has its own coroutine that applies the effect, waits `N` seconds, then reverts.
 5. If a PowerUp of the same type is picked up while already active, the timer resets (coroutine restarts).
 6. PowerUp objects that exit the play area bottom are destroyed by `OnBecameInvisible()`.
+7. The paddle's baseline scale X is captured once in `Start()` (`_paddleBaseScaleX`). ExpandPaddle always reverts to that baseline — never to the live (possibly already-expanded) scale — so re-picking up Expand while active does not lock the paddle wide.
+8. SlowBall applies via `BallController.SetSpeedModifier()`, a composable factor. It no longer reads or overwrites the ball's base speed, so the per-level multiplier survives the effect and is restored correctly on expiry.
 
 ### PowerUp Types
 
 | Type | Effect | Duration | Revert |
 |---|---|---|---|
-| ExpandPaddle | `PaddleController.SetWidth(5f)` | 10s | `SetWidth(original)` |
-| SlowBall | `BallController.SetSpeed(base × 0.6)` | 8s | `SetSpeed(original)` |
+| ExpandPaddle | `PaddleController.SetWidth(_expandScaleX)` | 10s | `SetWidth(_paddleBaseScaleX)` |
+| SlowBall | `BallController.SetSpeedModifier(0.6)` | 8s | `SetSpeedModifier(1f)` |
 
 ### Visual Coding
 
