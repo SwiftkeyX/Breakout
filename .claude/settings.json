@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "defaultMode": "ask",
+    "allow": [
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)"
+    ],
+    "deny": [
+      "Bash(git add .)",
+      "Bash(git add -A)",
+      "Bash(git commit -a*)",
+      "Bash(git push *main*)"
+    ]
+  }
+}
