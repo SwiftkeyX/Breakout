@@ -4,7 +4,7 @@
 
 **Entry:** Always open (first stage).
 **Exit:** Milestone 0 = [x] — all 6 foundation docs filled.
-**Skill:** `/preproduction-task`
+**Skill:** `/preproduction`
 
 - [x] Fill out `.claude/docs/design/game-vision.md`
 - [x] Fill out `.claude/docs/design/design-decisions.md`
@@ -18,7 +18,7 @@
 
 **Entry:** Milestone 0 = [x] — all Phase 1 docs complete.
 **Exit:** Milestone 2 = [x] — all systems designed, implemented, and tested.
-**Skill:** `/production-task`
+**Skill:** `/implement-system`
 
 ### Tier 1 — Foundation
 - [x] Create `.claude/docs/design/technical-design/<system>.md` for each Tier 1 system (copy `_template.md`)

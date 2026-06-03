@@ -49,10 +49,12 @@ For one-off doc lookups, consult `.claude/docs/index.md`.
 ```
 Docs read: [filename or "none"] — [one-sentence reason]
 Skills used: [skill names]
+Agent assigned: [subagent_type — task description]
 ```
 
 - **Docs read**: list every `.claude/docs/`, `CLAUDE.md`, or `memory/` file actually read this turn. Write `none` if you read nothing.
 - **Skills used**: list any skill or sub-agent invoked this turn. Omit this line entirely if nothing was invoked (avoids noisy `none`).
+- **Agent assigned**: list any sub-agent spawned via the Agent tool this turn, including its type and a brief task description. Omit this line entirely if no agent was spawned.
 - Do NOT list rules or hooks — rules are always active and hooks are run by the harness, not by you.
 - This header exists so omissions are visible: if a doc should have been read, its absence is the signal.
 

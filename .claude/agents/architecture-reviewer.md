@@ -1,7 +1,7 @@
 ---
 name: architecture-reviewer
 description: Use when validating that one or more scripts conform to the architecture contract — inter-system communication patterns, system responsibilities, and per-system technical design specs. Read-only; never implements. Faster and more targeted than technical-director (which does full project audits). Invoke mid-implementation after writing a system, or as a sub-agent spawned by technical-director for its architecture validation step.
-model: claude-sonnet-4-6
+model: claude-opus-4-8
 tools:
   - Glob
   - Grep
