@@ -2,6 +2,12 @@ Step-skill: implements one system in Unity from its approved GDD. Run by /produc
 
 ---
 
+## Agent
+
+`gameplay-programmer`
+
+---
+
 ## Docs
 
 | Doc | Read/Write | Purpose |

@@ -1,87 +1,62 @@
-Phase 2 production: complete procedure for one game system — design its GDD if missing, then implement it in Unity. Works for any tier.
+Phase 2 production orchestrator: enforces Phase 1 completion, then runs two mandatory sub-phases — design all GDDs first, then implement all systems in tier order.
 
 ---
 
-## Step 1 — Identify the system
+## Agent
 
-Ask the user: "Which system are you implementing?" (e.g., BallController, PaddleController, GameManager).
-
-Check `.claude/docs/PIPELINE.md` to confirm the system is listed as an unchecked Phase 2 item. If not listed, flag it and ask the user to confirm before continuing.
+Orchestrator — routes to sub-skills. See sub-skill agent assignments.
 
 ---
 
-## Step 2 — Read context docs (in this order)
+## Docs
 
-Read all four before touching any code or GDD:
-
-1. **`.claude/docs/design/systems-design.md`** — verify the system's tier and which systems it depends on
-2. **`.claude/docs/technical/architecture.md`** — note the script name, responsibility, and which components it interacts with
-3. **`.claude/docs/technical/best-practices.md`** — note all project-critical patterns; these override everything
-4. **`.claude/docs/project-snapshot-index.md`** — understand current scene state: which GameObjects exist, which scripts are already implemented
+| Doc | Read/Write | Purpose |
+|---|---|---|
+| `.claude/docs/PIPELINE.md` | Read | Verify entry condition; find unchecked systems |
 
 ---
 
-## Step 3 — Design the GDD (if it doesn't exist)
+## Entry Condition
 
-Check whether `.claude/docs/design/technical-design/<SystemName>.md` exists.
-
-**If it does not exist:**
-1. Read `.claude/template-docs/design/technical-design/_template.md`
-2. Create `.claude/docs/design/technical-design/<SystemName>.md` — fill every section using the template structure; leave nothing as a placeholder
-3. Ask the user to review and confirm the GDD before implementation begins
-
-**If it already exists:** read it fully before proceeding.
+Milestone 0 = [x] in PIPELINE.md. If not met, stop: "Phase 2 is locked — complete Phase 1 and check off Milestone 0 first."
 
 ---
 
-## Step 4 — Implement
+## Steps
 
-Use the gameplay-programmer agent or coplay MCP tools directly. Follow this sequence:
+**Step 1 — Entry check**
+Read PIPELINE.md. Confirm Milestone 0 = [x]. If not, stop with the message above.
 
-1. **Verify editor state** — call `get_unity_editor_state` and `list_game_objects_in_hierarchy`
-2. **Check existing scripts** — call `list_files` on `Assets/Scripts/` to see what is already implemented
-3. **Write script(s)** — write `Assets/Scripts/<SystemName>.cs` (and any supporting scripts listed in the GDD) to disk
-   - One script per responsibility — never merge two responsibilities
-   - Apply every pattern from `best-practices.md` exactly
-4. **Compile check** — call `check_compile_errors` after every script write; fix all errors before continuing
-5. **Wire scene** — place GameObjects, assign component references, set transforms per the GDD
-6. **Save** — call `save_scene`
-7. **Test** — call `play_game`, observe Unity console logs, call `stop_game`; fix any issues, then re-test
+**Step 2 — Sub-phase A: Design All (auto-sequential)**
 
----
+For every system listed in PIPELINE.md Phase 2 that does NOT yet have a GDD at `.claude/docs/design/technical-design/<SystemName>.md`, run `/design-system` for that system. Work in tier order: Tier 1 → Tier 2 → Tier 3. Continue automatically to the next system after each GDD is written.
 
-## Step 5 — Check off PIPELINE.md
+After all GDDs exist:
 
-After a successful test:
-1. Update `.claude/docs/PIPELINE.md`: change `- [ ] <SystemName>` to `- [x] <SystemName>`
-2. If all systems in a tier are now checked, also check off that tier's milestone line
+> "All GDDs written. Please review each file in `.claude/docs/design/technical-design/`. Reply 'approved' when all are confirmed — Sub-phase B will not start until you do."
 
----
+Wait for explicit user approval before proceeding to Sub-phase B.
 
-## Step 6 — Report
+**Step 3 — Sub-phase B: Code All (auto-sequential)**
 
-State:
-- GDD path written (if new)
-- Script(s) written: `Assets/Scripts/<SystemName>.cs`
-- Scene changes made
-- PIPELINE.md items checked off
+For each system in PIPELINE.md Phase 2 that is still unchecked, run `/code-system` for that system. Work in tier order: Tier 1 → Tier 2 → Tier 3. Continue automatically to the next system after each passes its test and is ticked.
+
+After all systems are checked:
+- Confirm Milestone 1 is ticked (all Tier 1 + Tier 2 systems done)
+- Confirm Milestone 2 is ticked (all systems done)
+
+**Step 4 — Report**
+"Phase 2 complete — all systems designed, implemented, and tested."
 
 ---
 
-## Outputs
+## Exit Condition
 
-| What | Path |
-|---|---|
-| System GDD (if new) | `.claude/docs/design/technical-design/<SystemName>.md` |
-| Primary script | `Assets/Scripts/<SystemName>.cs` |
-| Supporting scripts | `Assets/Scripts/<RelatedName>.cs` (as specified in GDD) |
-| PIPELINE.md update | `.claude/docs/PIPELINE.md` |
+Milestone 2 = [x] in PIPELINE.md.
 
 ---
 
 ## Constraints
 
-- Never start implementing before reading all four context docs in Step 2
-- Never leave compile errors unfixed
-- Never skip `save_scene`
-- Never check off a PIPELINE.md item before the `play_game` test passes
+- Sub-phase B must not begin before the user explicitly approves all GDDs
+- On blocking issue in any step-skill: call `/regress`

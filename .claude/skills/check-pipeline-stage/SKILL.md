@@ -2,6 +2,12 @@ Pipeline enforcer: reads PIPELINE.md, reports current stage, detects regressions
 
 ---
 
+## Agent
+
+`claude`
+
+---
+
 ## Docs
 
 | Doc | Read/Write | Purpose |

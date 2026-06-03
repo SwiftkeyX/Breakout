@@ -2,6 +2,12 @@ Step-skill: creates the technical design GDD for one system. Run by /production-
 
 ---
 
+## Agent
+
+`claude`
+
+---
+
 ## Docs
 
 | Doc | Read/Write | Purpose |

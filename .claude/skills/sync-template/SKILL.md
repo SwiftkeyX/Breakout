@@ -2,6 +2,14 @@
 
 Sync structural improvements from this project back to the original workflow template.
 
+---
+
+## Agent
+
+`claude`
+
+---
+
 ## When to use
 
 Run `/sync-template` after you have made any improvements to:

@@ -2,6 +2,12 @@ Audit all `.md` files in this project for broken path references and stale doc-i
 
 ---
 
+## Agent
+
+`claude`
+
+---
+
 ## Step 1 — Discover all .md files
 
 Use Glob with pattern `**/*.md` from the project root. This is your working set.

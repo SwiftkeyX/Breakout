@@ -2,6 +2,12 @@ Review all pending changes, group them into logical atomic commits, present the 
 
 ---
 
+## Agent
+
+`claude`
+
+---
+
 ## Step 1 — Audit current state
 
 Run `git status` and `git diff --stat` to list all modified and untracked files.

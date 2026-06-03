@@ -1,53 +1,58 @@
-Phase 1 pre-production: fill out all design and technical foundation docs from templates, then check off completed items in PIPELINE.md.
+Phase 1 pre-production orchestrator: checks entry condition, then auto-runs all /write-* step-skills in sequence until Milestone 0 is complete.
 
 ---
 
-## Step 1 — Check pipeline status
+## Agent
 
-Read `.claude/docs/PIPELINE.md`. Identify all unchecked `- [ ]` items under **Phase 1 — Pre-production**. If all Phase 1 items are already checked, report "Phase 1 complete." and stop.
-
-List the unchecked items to the user before proceeding.
+Orchestrator — routes to sub-skills. See sub-skill agent assignments.
 
 ---
 
-## Step 2 — For each unchecked Phase 1 doc, fill it out
+## Docs
 
-Work through unchecked items in this order:
-
-| PIPELINE.md item | Template to read first | Project doc to write |
+| Doc | Read/Write | Purpose |
 |---|---|---|
-| Fill out `game-vision.md` | *(no template — original content)* | `.claude/docs/design/game-vision.md` |
-| Fill out `design-decisions.md` | *(no template — original content)* | `.claude/docs/design/design-decisions.md` |
-| Fill out `technical-preferences.md` | `.claude/template-docs/technical/technical-preferences.md` | `.claude/docs/technical/technical-preferences.md` |
-| Fill out `systems-design.md` | `.claude/template-docs/design/systems-design.md` | `.claude/docs/design/systems-design.md` |
-| Fill out `architecture.md` | `.claude/template-docs/technical/architecture.md` | `.claude/docs/technical/architecture.md` |
-| Fill out `best-practices.md` | `.claude/template-docs/technical/best-practices.md` | `.claude/docs/technical/best-practices.md` |
-
-For each:
-1. Read the template file (if one exists) to understand the required structure and sections
-2. If the project doc already exists, read it to see what is already filled in
-3. Ask the user for any project-specific information needed (game name, engine version, systems list, etc.) before writing
-4. Write the completed project doc — follow the template structure exactly, replace all placeholder content with project-specific content
-5. Never write project-specific content into `template-docs/`
+| `.claude/docs/PIPELINE.md` | Read | Find first unchecked Phase 1 item; verify Milestone 0 on exit |
 
 ---
 
-## Step 3 — Check off completed items
+## Entry Condition
 
-After each doc is written, update `.claude/docs/PIPELINE.md`: change `- [ ]` to `- [x]` for that item.
-
-After all docs are filled: check off `Milestone 0 — vision complete, all systems tiered, architecture and tech stack finalized` if all six docs are done.
+Always open — Phase 1 has no prerequisite.
 
 ---
 
-## Step 4 — Report completion
+## Steps
 
-List every doc written and its path. Confirm Phase 1 status: "Phase 1 complete — all items checked."
+**Step 1 — Entry check**
+Read `.claude/docs/PIPELINE.md`. If all Phase 1 items are `[x]`, report "Phase 1 complete — Milestone 0 achieved." and stop.
+
+**Step 2 — Find first unchecked item and auto-run step-skills in sequence**
+
+| PIPELINE.md item | Step-skill |
+|---|---|
+| Fill out `game-vision.md` | `/write-game-vision` |
+| Fill out `design-decisions.md` | `/write-design-decisions` |
+| Fill out `technical-preferences.md` | `/write-technical-preferences` |
+| Fill out `systems-design.md` | `/write-systems-design` |
+| Fill out `architecture.md` | `/write-architecture` |
+| Fill out `best-practices.md` | `/write-best-practices` |
+
+Start at the first unchecked item. Run its step-skill. After it completes and ticks its PIPELINE.md item, continue automatically to the next unchecked item. Do not pause between skills unless the skill itself requires user input.
+
+**Step 3 — Exit check**
+After all 6 docs are checked, confirm Milestone 0 is ticked. Report "Phase 1 complete."
+
+---
+
+## Exit Condition
+
+Milestone 0 = [x] in PIPELINE.md (all 6 docs filled).
 
 ---
 
 ## Constraints
 
-- Never skip reading the template before writing the project doc — structure must match
-- Never fill in placeholder values with made-up content — ask the user if information is missing
+- Never skip a step-skill — run every unchecked item in order
 - Never modify `template-docs/` files
+- On blocking issue in any step-skill: call `/regress` — do not attempt to fix it here
