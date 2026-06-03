@@ -1,1 +1,1 @@
-public enum PowerUpType { TripleBall, SpeedBoost }
+public enum PowerUpType { ExpandPaddle, SlowBall }

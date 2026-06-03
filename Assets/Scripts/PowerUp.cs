@@ -11,9 +11,9 @@ public class PowerUp : MonoBehaviour
         _type    = type;
         _speed   = speed;
         _manager = manager;
-        GetComponent<SpriteRenderer>().color = type == PowerUpType.TripleBall
-            ? new Color(0.3f, 0.7f, 1f)
-            : new Color(1f, 0.4f, 0.1f);
+        GetComponent<SpriteRenderer>().color = type == PowerUpType.ExpandPaddle
+            ? new Color(0.4f, 1f, 0.4f)
+            : new Color(1f, 0.8f, 0.2f);
     }
 
     void Update() => transform.Translate(Vector2.down * _speed * Time.deltaTime);

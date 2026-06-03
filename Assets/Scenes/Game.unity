@@ -243,12 +243,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpManager
   _powerUpPrefab: {fileID: 7910033888727524639, guid: f577c26ad6405da4b97d4141dde1f165, type: 3}
+  _paddle: {fileID: 1746104865}
   _ball: {fileID: 748639694}
   _dropChance: 0.3
   _fallSpeed: 3
-  _boostDuration: 5
-  _boostMultiplier: 1.5
-  _auxBallColor: {r: 1, g: 0.2, b: 0.7, a: 1}
+  _expandDuration: 10
+  _expandScaleX: 5
+  _slowDuration: 8
+  _slowMultiplier: 0.6
 --- !u!4 &243042691
 Transform:
   m_ObjectHideFlags: 0
@@ -465,14 +467,6 @@ PrefabInstance:
       propertyPath: _paddle
       value: 
       objectReference: {fileID: 1746104865}
-    - target: {fileID: 2762653386652217800, guid: 38432a8647f475a4c9358ae0a64442be, type: 3}
-      propertyPath: BaseSpeed
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 2762653386652217800, guid: 38432a8647f475a4c9358ae0a64442be, type: 3}
-      propertyPath: _minSpeed
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 5193990755372806355, guid: 38432a8647f475a4c9358ae0a64442be, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -604,7 +598,7 @@ Transform:
   m_GameObject: {fileID: 1205512213}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -7.4, z: 0}
+  m_LocalPosition: {x: 0, y: -6.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -654,7 +648,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 21.8, y: 2}
+  m_Size: {x: 21.8, y: 0.2}
   m_EdgeRadius: 0
 --- !u!1 &1211577434
 GameObject:
