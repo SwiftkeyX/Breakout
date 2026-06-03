@@ -18,7 +18,7 @@
 
 **Entry:** Milestone 0 = [x] — all Phase 1 docs complete.
 **Exit:** Milestone 2 = [x] — all systems designed, implemented, and tested.
-**Skill:** `/implement-system`
+**Skill:** `/production-task`
 
 ### Tier 1 — Foundation
 - [x] Create `.claude/docs/design/technical-design/<system>.md` for each Tier 1 system (copy `_template.md`)

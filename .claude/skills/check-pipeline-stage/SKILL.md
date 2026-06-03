@@ -82,7 +82,7 @@ Based on the active phase, tell the user which skill to run:
 | Phase | Orchestrator |
 |---|---|
 | Phase 1 (Pre-production) | Run `/preproduction-task` |
-| Phase 2 (Production) | Run `/implement-system` |
+| Phase 2 (Production) | Run `/production-task` |
 | Phase 3 (Beta) | Run `/beta-task` |
 
 Format: "Run `/beta-task` to continue."
