@@ -1,43 +1,53 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PowerUpManager : MonoBehaviour
 {
     [SerializeField] private GameObject _powerUpPrefab;
-    [SerializeField] private PaddleController _paddle;
     [SerializeField] private BallController _ball;
 
-    [SerializeField] private float _dropChance     = 0.3f;
-    [SerializeField] private float _fallSpeed      = 3f;
-    [SerializeField] private float _expandDuration = 10f;
-    [SerializeField] private float _expandScaleX   = 5f;
-    [SerializeField] private float _slowDuration   = 8f;
-    [SerializeField] private float _slowMultiplier = 0.6f;
+    [SerializeField] private float _dropChance      = 0.55f;
+    [SerializeField] private float _fallSpeed       = 5f;
+    [SerializeField] private float _boostDuration   = 5f;
+    [SerializeField] private float _boostMultiplier = 2.0f;
+    [SerializeField] private Color _auxBallColor    = new Color(1f, 0.2f, 0.7f);
 
-    private Coroutine _expandCoroutine;
-    private Coroutine _slowCoroutine;
-    private float _paddleBaseScaleX = 1f;
+    private Coroutine _boostCoroutine;
+    private readonly List<BallController> _auxBalls = new();
 
     void Start()
     {
-        if (_paddle != null) _paddleBaseScaleX = _paddle.transform.localScale.x;
         if (GameManager.Instance != null)
+        {
             GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+            GameManager.Instance.OnLivesChanged += OnLivesChanged;
+        }
     }
 
     void OnDestroy()
     {
         if (GameManager.Instance != null)
+        {
             GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+            GameManager.Instance.OnLivesChanged -= OnLivesChanged;
+        }
     }
 
     private void OnGameStateChanged(GameManager.GameState state)
     {
         if (state != GameManager.GameState.LevelComplete) return;
-        if (_expandCoroutine != null) { StopCoroutine(_expandCoroutine); _expandCoroutine = null; }
-        if (_slowCoroutine   != null) { StopCoroutine(_slowCoroutine);   _slowCoroutine   = null; }
-        if (_paddle != null) _paddle.SetWidth(_paddleBaseScaleX);
-        if (_ball   != null) _ball.SetSpeedModifier(1f);
+        if (_boostCoroutine != null) { StopCoroutine(_boostCoroutine); _boostCoroutine = null; }
+        if (_ball != null) _ball.ClearSpeedModifiers();
+        ClearAuxBalls();
+    }
+
+    private void OnLivesChanged(int _) => ClearAuxBalls();
+
+    private void ClearAuxBalls()
+    {
+        foreach (var b in _auxBalls) if (b != null) Destroy(b.gameObject);
+        _auxBalls.Clear();
     }
 
     public void TrySpawnDrop(Vector3 position)
@@ -53,32 +63,46 @@ public class PowerUpManager : MonoBehaviour
     {
         switch (type)
         {
-            case PowerUpType.ExpandPaddle:
-                if (_expandCoroutine != null) StopCoroutine(_expandCoroutine);
-                _expandCoroutine = StartCoroutine(ExpandPaddleEffect());
+            case PowerUpType.TripleBall:
+                SpawnAuxBalls();
                 break;
-            case PowerUpType.SlowBall:
-                if (_slowCoroutine != null) StopCoroutine(_slowCoroutine);
-                _slowCoroutine = StartCoroutine(SlowBallEffect());
+            case PowerUpType.SpeedBoost:
+                if (_boostCoroutine != null) StopCoroutine(_boostCoroutine);
+                _boostCoroutine = StartCoroutine(SpeedBoostEffect());
                 break;
         }
     }
 
-    private IEnumerator ExpandPaddleEffect()
+    private void SpawnAuxBalls()
     {
-        if (_paddle == null) yield break;
-        _paddle.SetWidth(_expandScaleX);
-        yield return new WaitForSeconds(_expandDuration);
-        _paddle.SetWidth(_paddleBaseScaleX);
-        _expandCoroutine = null;
+        if (_ball == null) return;
+        Vector2 vel = _ball.Velocity;
+        if (vel == Vector2.zero) vel = Vector2.up * _ball.BaseSpeed;
+        SpawnAuxBall(Rotate(vel, 30f));
+        SpawnAuxBall(Rotate(vel, -30f));
     }
 
-    private IEnumerator SlowBallEffect()
+    private void SpawnAuxBall(Vector2 velocity)
+    {
+        var go  = Instantiate(_ball.gameObject, _ball.transform.position, _ball.transform.rotation);
+        var aux = go.GetComponent<BallController>();
+        aux.InitAsAuxiliary(velocity, _auxBallColor);
+        _auxBalls.Add(aux);
+    }
+
+    private IEnumerator SpeedBoostEffect()
     {
         if (_ball == null) yield break;
-        _ball.SetSpeedModifier(_slowMultiplier);
-        yield return new WaitForSeconds(_slowDuration);
-        _ball.SetSpeedModifier(1f);
-        _slowCoroutine = null;
+        _ball.AddSpeedModifier(_boostMultiplier);
+        yield return new WaitForSeconds(_boostDuration);
+        _ball.RemoveSpeedModifier(_boostMultiplier);
+        _boostCoroutine = null;
+    }
+
+    private static Vector2 Rotate(Vector2 v, float degrees)
+    {
+        float rad = degrees * Mathf.Deg2Rad;
+        float cos = Mathf.Cos(rad), sin = Mathf.Sin(rad);
+        return new Vector2(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
     }
 }
