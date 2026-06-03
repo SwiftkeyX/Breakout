@@ -12,14 +12,11 @@ public class GameManager : MonoBehaviour
 
     public GameState State { get; private set; }
     public int Lives { get; private set; }
-    // public int CurrentLevelIndex { get ; private set; }     
+    public int CurrentLevelIndex { get; private set; }
     public int TotalLevels => TOTAL_LEVELS;
 
     private const int STARTING_LIVES = 3;
     private const int TOTAL_LEVELS = 5;
-
-    [Header("Debug")]
-    public int CurrentLevelIndex;     
 
     void Awake()
     {
