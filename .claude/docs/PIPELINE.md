@@ -2,6 +2,10 @@
 
 ## Phase 1 — Pre-production
 
+**Entry:** Always open (first stage).
+**Exit:** Milestone 0 = [x] — all 6 foundation docs filled.
+**Skill:** `/preproduction-task`
+
 - [x] Fill out `.claude/docs/design/game-vision.md`
 - [x] Fill out `.claude/docs/design/design-decisions.md`
 - [x] Fill out `.claude/docs/technical/technical-preferences.md` (engine, platform, performance budgets)
@@ -11,6 +15,10 @@
 - [x] Milestone 0 — vision complete, all systems tiered, architecture and tech stack finalized
 
 ## Phase 2 — Production
+
+**Entry:** Milestone 0 = [x] — all Phase 1 docs complete.
+**Exit:** Milestone 2 = [x] — all systems designed, implemented, and tested.
+**Skill:** `/implement-system`
 
 ### Tier 1 — Foundation
 - [x] Create `.claude/docs/design/technical-design/<system>.md` for each Tier 1 system (copy `_template.md`)
@@ -37,9 +45,18 @@
 
 ## Phase 3 — Beta
 
+**Entry:** Milestone 2 = [x] — all production systems complete.
+**Exit:** Ship gate passed — all Phase 3 items checked.
+**Skill:** `/beta-task`
+
 - [x] Juice pass — screen shake, particles, hit-stop, SFX, music, UI animations
 - [ ] Feel tuning — tweak values via ScriptableObjects/Inspector
+  - **Gate:** User confirms feel matches the Chaotic · Explosive · Fun pillars in `game-vision.md`
 - [ ] Difficulty tuning — curve, pacing, escalation
+  - **Gate:** User confirms the difficulty curve feels intentional and escalates correctly across all levels
 - [ ] Bug pass — all known issues fixed (`.claude/docs/process/known-issues.md` clear)
+  - **Gate:** `known-issues.md` Open table contains no rows (only the placeholder or empty)
 - [ ] Performance pass — GC allocs and frame rate within budgets (`.claude/docs/technical/technical-preferences.md`)
+  - **Gate:** `get_worst_gc_frames` shows zero alloc in steady-state gameplay; all frames under 16.6ms
 - [ ] Ship — final build, smoke test, release (`.claude/docs/process/build-notes.md` checklist)
+  - **Gate:** All other Phase 3 items checked AND `build-notes.md` release checklist fully ticked

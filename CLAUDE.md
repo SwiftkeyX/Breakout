@@ -18,7 +18,7 @@ Key coplay workflow:
 ## Project-Specific Rules
 
 For implementation tasks, use the phase skill that matches the current pipeline stage:
-- `/preproduction` — Phase 1: fill out design and technical docs
+- `/preproduction-task` — Phase 1: fill out design and technical docs
 - `/implement-system` — Phase 2: design GDD and implement a system
 - `/beta-task` — Phase 3: feel tuning, bug pass, performance pass, ship
 
@@ -44,7 +44,17 @@ For one-off doc lookups, consult `.claude/docs/index.md`.
 
 ### Claude Behavior
 
-**State which docs you read before starting implementation.** At the start of any implementation response, include one line: `Docs read: [filename or "none"] — [one-sentence reason]`. This makes doc-reading auditable.
+**State what you used at the start of every response.** Every response must open with an audit header — even short conversational answers. Format:
+
+```
+Docs read: [filename or "none"] — [one-sentence reason]
+Skills used: [skill names]
+```
+
+- **Docs read**: list every `.claude/docs/`, `CLAUDE.md`, or `memory/` file actually read this turn. Write `none` if you read nothing.
+- **Skills used**: list any skill or sub-agent invoked this turn. Omit this line entirely if nothing was invoked (avoids noisy `none`).
+- Do NOT list rules or hooks — rules are always active and hooks are run by the harness, not by you.
+- This header exists so omissions are visible: if a doc should have been read, its absence is the signal.
 
 **Use `template-docs/` as structural reference when creating project docs.** When creating or updating any doc in `.claude/docs/`, read the corresponding file in `.claude/template-docs/` first to follow the correct structure and format. Never write project-specific content into `.claude/template-docs/`.
 
