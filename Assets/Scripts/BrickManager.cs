@@ -36,8 +36,8 @@ public class BrickManager : MonoBehaviour
     // power-up drops, and level progression — bricks stay dumb entities.
     public void OnBrickDestroyed(BrickData data, Vector3 position)
     {
-        CameraEffects.Instance?.HitStop(0.06f);
-        CameraEffects.Instance?.Shake(0.08f, 0.15f);
+        CameraEffects.Instance?.HitStop(0.08f);
+        CameraEffects.Instance?.Shake(0.18f, 0.22f);
         var pool = ParticlePool.Instance;
         if (pool != null) pool.Burst(position, data.FullHealthColor);
         AudioManager.Instance?.Play(AudioManager.Instance.SfxBrickBreak);
@@ -48,7 +48,7 @@ public class BrickManager : MonoBehaviour
         _remainingBricks--;
         if (_remainingBricks > 0) return;
 
-        CameraEffects.Instance?.Shake(0.20f, 0.40f);
+        CameraEffects.Instance?.Shake(0.30f, 0.55f);
         AudioManager.Instance?.Play(AudioManager.Instance.SfxLevelClear);
         GameManager.Instance.OnLevelComplete();
     }
