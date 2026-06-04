@@ -10,30 +10,35 @@ A Claude Code template for building Unity games with AI assistance via the **cop
 | `CLAUDE.md` | Root instructions — coplay workflow, doc index, Claude behavior |
 | `.claude/docs/PIPELINE.md` | Phase tracker — Pre-production → Production → Beta |
 
-### Design docs (`.claude/docs/design/`)
+### Pre-production docs (`.claude/docs/preproduction/`)
 | Path | Purpose |
 |---|---|
-| `.claude/docs/design/game-vision.md` | Full creative vision — genre, pillars, mechanics, art/audio |
-| `.claude/docs/design/design-decisions.md` | Locked decisions — terminology, constraints, Claude-facing rules |
-| `.claude/docs/design/systems-design.md` | Every system, its responsibility, dependencies, and tier |
-| `.claude/docs/design/technical-design/_template.md` | Per-system GDD template — copy for each system |
+| `.claude/docs/preproduction/game-vision.md` | Full creative vision — genre, pillars, mechanics, art/audio |
+| `.claude/docs/preproduction/design-decisions.md` | Locked decisions — terminology, constraints, Claude-facing rules |
+| `.claude/docs/preproduction/systems-design.md` | Every system, its responsibility, dependencies, and tier |
+| `.claude/docs/preproduction/technical-preferences.md` | Engine version, platform, performance budgets, testing requirements |
+| `.claude/docs/preproduction/best-practices.md` | Project-critical patterns + Unity 6 current patterns |
+| `.claude/docs/preproduction/architecture.md` | Script responsibilities, component patterns |
 
-### Technical docs (`.claude/docs/technical/`)
+### Production docs (`.claude/docs/production/`)
 | Path | Purpose |
 |---|---|
-| `.claude/docs/technical/technical-preferences.md` | Engine version, platform, performance budgets, testing requirements |
-| `.claude/docs/technical/best-practices.md` | Project-critical patterns + Unity 6 current patterns |
-| `.claude/docs/technical/architecture.md` | Script responsibilities, component patterns |
-| `.claude/docs/technical/coding-style.md` | Required patterns and anti-patterns |
-| `.claude/docs/technical/asset-conventions.md` | Folder layout, naming rules, import settings |
+| `.claude/docs/production/technical-design/<system>.md` | Per-system GDD — one file per system |
+| `.claude/template-docs/design/technical-design/_template.md` | Per-system GDD template — copy for each system |
 
-### Process docs (`.claude/docs/process/`)
+### Template docs (`.claude/template-docs/technical/`)
 | Path | Purpose |
 |---|---|
-| `.claude/docs/process/onboarding.md` | Setup guide — how to open, run, and test the project |
-| `.claude/docs/process/build-notes.md` | Unity version, platforms, build steps, release checklist |
-| `.claude/docs/process/known-issues.md` | Open/fixed bugs — check before implementing related systems |
-| `.claude/docs/process/changelog.md` | Milestone log |
+| `.claude/template-docs/technical/coding-style.md` | Required patterns and anti-patterns |
+| `.claude/template-docs/technical/asset-conventions.md` | Folder layout, naming rules, import settings |
+
+### Beta docs (`.claude/docs/beta/`)
+| Path | Purpose |
+|---|---|
+| `.claude/template-docs/process/onboarding.md` | Setup guide — how to open, run, and test the project |
+| `.claude/docs/beta/build-notes.md` | Unity version, platforms, build steps, release checklist |
+| `.claude/docs/beta/known-issues.md` | Open/fixed bugs — check before implementing related systems |
+| `.claude/docs/beta/changelog.md` | Milestone log |
 
 ### Agents
 | Path | Purpose |
@@ -44,7 +49,7 @@ A Claude Code template for building Unity games with AI assistance via the **cop
 ### Architecture Decision Records
 | Path | Purpose |
 |---|---|
-| `.claude/docs/adr/` | One file per significant technical decision |
+| `.claude/docs/relevant-doc/adr/` | One file per significant technical decision |
 
 ---
 
@@ -62,11 +67,11 @@ claude
 
 Before writing any code, fill in these files in order:
 
-1. `.claude/docs/design/game-vision.md` — title, genre, pillars, mechanics, art/audio direction
-2. `.claude/docs/design/design-decisions.md` — canonical terms, spatial boundaries, locked decisions
-3. `.claude/docs/design/systems-design.md` — every system, tier, responsibility, and dependencies
-4. `.claude/docs/technical/technical-preferences.md` — engine version, platform, performance budgets
-5. `.claude/docs/technical/architecture.md` — your script table and any extra patterns
+1. `.claude/docs/preproduction/game-vision.md` — title, genre, pillars, mechanics, art/audio direction
+2. `.claude/docs/preproduction/design-decisions.md` — canonical terms, spatial boundaries, locked decisions
+3. `.claude/docs/preproduction/systems-design.md` — every system, tier, responsibility, and dependencies
+4. `.claude/docs/preproduction/technical-preferences.md` — engine version, platform, performance budgets
+5. `.claude/docs/preproduction/architecture.md` — your script table and any extra patterns
 
 Run `/pipeline` at any time to see current progress and the next action.
 
@@ -76,7 +81,7 @@ Install the [coplay MCP](https://coplay.dev) and open your Unity project. Claude
 
 ### 4. Add per-system design docs
 
-For each major system, copy `.claude/docs/design/technical-design/_template.md` and fill it in before implementing that system.
+For each major system, copy `.claude/template-docs/design/technical-design/_template.md` and fill it in before implementing that system.
 
 ### 5. Start building
 
