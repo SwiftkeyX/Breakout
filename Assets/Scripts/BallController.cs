@@ -40,11 +40,6 @@ public class BallController : MonoBehaviour
     {
         Rb = GetComponent<Rigidbody2D>();
         Sr = GetComponent<SpriteRenderer>();
-        if (IsMain)
-        {
-            Instance = this;
-            if (_paddle == null) Debug.LogWarning("BallController: PaddleController not assigned.");
-        }
         WaitingState  = new BallWaitingState(this);
         FloatingState = new BallFloatingState(this);
         HittingState  = new BallHittingState(this);
@@ -55,6 +50,8 @@ public class BallController : MonoBehaviour
     {
         if (IsMain)
         {
+            Instance = this;
+            if (_paddle == null) Debug.LogWarning("BallController: PaddleController not assigned.");
             CurrentSpeed = EffectiveSpeed;
             TransitionTo(WaitingState);
         }
@@ -105,6 +102,7 @@ public class BallController : MonoBehaviour
     public void ApplySpeed()
     {
         CurrentSpeed = EffectiveSpeed;
+        if (Rb == null) return;
         if ((_state is BallFloatingState || _state is BallHittingState) &&
             Rb.bodyType == RigidbodyType2D.Dynamic && Rb.linearVelocity != Vector2.zero)
             Rb.linearVelocity = Rb.linearVelocity.normalized * CurrentSpeed;
