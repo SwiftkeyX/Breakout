@@ -1,8 +1,15 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BrickManager : MonoBehaviour
 {
+    public static BrickManager Instance { get; private set; }
+
+    public event Action<Vector3, Color> BrickDestroyed;
+    public event Action                 BrickDamaged;
+    public event Action                 LevelCleared;
+
     [SerializeField] private GameObject _brickPrefab;
     [SerializeField] private LevelData[] _levels;
     [SerializeField] private BrickData _dataStandard;
@@ -18,46 +25,42 @@ public class BrickManager : MonoBehaviour
     private List<GameObject> _bricks = new();
     private int _remainingBricks;
 
+    void Awake() => Instance = this;
+
     void Start()
     {
         if (GameManager.Instance == null) { Debug.LogWarning("BrickManager: GameManager.Instance is null."); return; }
         GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
-        AudioManager.Instance?.PlayMusic();
         LoadLevel(GameManager.Instance.CurrentLevelIndex);
     }
 
     void OnDestroy()
     {
+        if (Instance == this) Instance = null;
+        BrickDestroyed = null;
+        BrickDamaged   = null;
+        LevelCleared   = null;
         if (GameManager.Instance != null)
             GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
     }
 
-    // A brick reached 0 HP. The manager owns all resulting effects, scoring,
-    // power-up drops, and level progression — bricks stay dumb entities.
+    // A brick reached 0 HP. The manager fires events — audio, effects, and game state
+    // are handled by subscribers, not here.
     public void OnBrickDestroyed(BrickData data, Vector3 position)
     {
-        CameraEffects.Instance?.HitStop(0.06f);
-        CameraEffects.Instance?.Shake(0.08f, 0.15f);
-        var pool = ParticlePool.Instance;
-        if (pool != null) pool.Burst(position, data.FullHealthColor);
-        AudioManager.Instance?.Play(AudioManager.Instance.SfxBrickBreak);
+        BrickDestroyed?.Invoke(position, data.FullHealthColor);
 
         ScoreManager.Instance?.AddScore(data.PointValue);
         _powerUpManager?.TrySpawnDrop(position);
 
         _remainingBricks--;
-        if (_remainingBricks > 0) return;
-
-        CameraEffects.Instance?.Shake(0.20f, 0.40f);
-        AudioManager.Instance?.Play(AudioManager.Instance.SfxLevelClear);
-        GameManager.Instance.OnLevelComplete();
+        if (_remainingBricks <= 0)
+            LevelCleared?.Invoke();
     }
 
-    // A reinforced brick took a hit but survived — brief hitstop + hit SFX.
     public void OnBrickDamaged()
     {
-        CameraEffects.Instance?.HitStop(0.03f);
-        AudioManager.Instance?.Play(AudioManager.Instance.SfxHitBrick);
+        BrickDamaged?.Invoke();
     }
 
     private void OnGameStateChanged(GameManager.GameState state)
@@ -98,8 +101,8 @@ public class BrickManager : MonoBehaviour
             var type = data.Grid[i];
             if (type == BrickType.None) continue;
 
-            var pos  = new Vector3(startX + c * _cellWidth, _gridTop - r * _cellHeight, 0f);
-            var go   = Instantiate(_brickPrefab, pos, Quaternion.identity, transform);
+            var pos   = new Vector3(startX + c * _cellWidth, _gridTop - r * _cellHeight, 0f);
+            var go    = Instantiate(_brickPrefab, pos, Quaternion.identity, transform);
             var brick = go.GetComponent<Brick>();
             bool destructible = type != BrickType.Indestructible;
             brick.Init(GetData(type), this, destructible);

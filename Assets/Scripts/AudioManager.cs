@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class AudioManager : MonoBehaviour
     private AudioSource[] _sfxPool;
     private AudioSource _musicSource;
     private int _poolIndex;
+    private BrickManager _brickManager;
 
     private const int POOL_SIZE = 6;
 
@@ -38,6 +40,53 @@ public class AudioManager : MonoBehaviour
         _musicSource.volume = _musicVolume;
         _musicSource.playOnAwake = false;
     }
+
+    void Start()
+    {
+        if (Instance != this) return;
+        SceneManager.sceneLoaded   += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+        TrySubscribeBrickManager();
+        PlayMusic();
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded   -= OnSceneLoaded;
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        UnsubscribeBrickManager();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        TrySubscribeBrickManager();
+        PlayMusic();
+    }
+
+    private void OnSceneUnloaded(Scene scene) => UnsubscribeBrickManager();
+
+    private void TrySubscribeBrickManager()
+    {
+        UnsubscribeBrickManager();
+        _brickManager = BrickManager.Instance;
+        if (_brickManager == null) return;
+        _brickManager.BrickDestroyed += OnBrickDestroyed;
+        _brickManager.BrickDamaged   += OnBrickDamaged;
+        _brickManager.LevelCleared   += OnLevelCleared;
+    }
+
+    private void UnsubscribeBrickManager()
+    {
+        if (_brickManager == null) return;
+        _brickManager.BrickDestroyed -= OnBrickDestroyed;
+        _brickManager.BrickDamaged   -= OnBrickDamaged;
+        _brickManager.LevelCleared   -= OnLevelCleared;
+        _brickManager = null;
+    }
+
+    private void OnBrickDestroyed(Vector3 _, Color __) => Play(SfxBrickBreak);
+    private void OnBrickDamaged()                      => Play(SfxHitBrick);
+    private void OnLevelCleared()                      => Play(SfxLevelClear);
 
     public void Play(AudioClip clip)
     {

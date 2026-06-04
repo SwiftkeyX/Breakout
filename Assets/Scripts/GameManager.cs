@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,12 +19,47 @@ public class GameManager : MonoBehaviour
     private const int STARTING_LIVES = 3;
     private const int TOTAL_LEVELS = 5;
 
+    private BrickManager _brickManager;
+
     void Awake()
     {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
         Lives = STARTING_LIVES;
         DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        UnsubscribeBrickManager();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        UnsubscribeBrickManager();
+        _brickManager = BrickManager.Instance;
+        if (_brickManager != null)
+            _brickManager.LevelCleared += OnLevelComplete;
+    }
+
+    private void OnSceneUnloaded(Scene scene) => UnsubscribeBrickManager();
+
+    /// <summary>
+    /// BrickManager is the singleton.
+    /// You should reference to it like this: BrickManager.Instance.Do();
+    /// Why did you create variable reference to it.
+    /// </summary>
+    private void UnsubscribeBrickManager()
+    {
+        if (_brickManager != null)
+        {
+            _brickManager.LevelCleared -= OnLevelComplete;
+            _brickManager = null;
+        }
     }
 
     public void StartGame()

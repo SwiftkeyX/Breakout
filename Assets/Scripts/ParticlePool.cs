@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class ParticlePool : MonoBehaviour
 {
@@ -9,11 +11,20 @@ public class ParticlePool : MonoBehaviour
     private ParticleSystem[] _pool;
     private int _index;
 
+    /// <summary>
+    /// BrickManager is the singleton.
+    /// You should reference to it like this: BrickManager.Instance.Do();
+    /// Why did you create variable reference to it.
+    /// </summary>
+    private BrickManager _brickManager;
+
     void Awake()
     {
         if (Instance != null) return;
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
         _pool = new ParticleSystem[_poolSize];
         for (int i = 0; i < _poolSize; i++)
         {
@@ -22,6 +33,32 @@ public class ParticlePool : MonoBehaviour
             _pool[i] = BuildParticleSystem(go);
         }
     }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        UnsubscribeBrickManager();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        UnsubscribeBrickManager();
+        BrickManager.Instance.BrickDestroyed += OnBrickDestroyed;
+    }
+
+    private void OnSceneUnloaded(Scene scene) => UnsubscribeBrickManager();
+
+    private void UnsubscribeBrickManager()
+    {
+        if (_brickManager != null)
+        {
+            _brickManager.BrickDestroyed -= OnBrickDestroyed;
+            _brickManager = null;
+        }
+    }
+
+    private void OnBrickDestroyed(Vector3 position, Color color) => Burst(position, color);
 
     public void Burst(Vector3 position, Color color)
     {
@@ -46,14 +83,14 @@ public class ParticlePool : MonoBehaviour
         ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
         var main = ps.main;
-        main.playOnAwake    = false;
-        main.startLifetime  = 0.5f;
-        main.startSpeed     = 5f;
-        main.startSize      = 0.1f;
-        main.maxParticles   = 20;
-        main.duration       = 0.2f;
-        main.loop           = false;
-        main.stopAction     = ParticleSystemStopAction.None;
+        main.playOnAwake = false;
+        main.startLifetime = 0.5f;
+        main.startSpeed = 5f;
+        main.startSize = 0.1f;
+        main.maxParticles = 20;
+        main.duration = 0.2f;
+        main.loop = false;
+        main.stopAction = ParticleSystemStopAction.None;
         main.simulationSpace = ParticleSystemSimulationSpace.World;
 
         var emission = ps.emission;
@@ -61,10 +98,10 @@ public class ParticlePool : MonoBehaviour
 
         var shape = ps.shape;
         shape.shapeType = ParticleSystemShapeType.Rectangle;
-        shape.scale     = new Vector3(0.8f, 0.25f, 0.1f);
+        shape.scale = new Vector3(0.8f, 0.25f, 0.1f);
 
         var vel = ps.velocityOverLifetime;
-        vel.enabled  = true;
+        vel.enabled = true;
         vel.speedModifier = new ParticleSystem.MinMaxCurve(1f, new AnimationCurve(
             new Keyframe(0f, 1f), new Keyframe(1f, 0f)));
 

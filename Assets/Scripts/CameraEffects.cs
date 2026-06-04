@@ -14,6 +14,28 @@ public class CameraEffects : MonoBehaviour
         _origin = transform.position;
     }
 
+    void Start()
+    {
+        if (BrickManager.Instance == null) return;
+        BrickManager.Instance.BrickDestroyed += OnBrickDestroyed;
+        BrickManager.Instance.BrickDamaged   += OnBrickDamaged;
+        BrickManager.Instance.LevelCleared   += OnLevelCleared;
+    }
+
+    void OnDestroy()
+    {
+        if (BrickManager.Instance != null)
+        {
+            BrickManager.Instance.BrickDestroyed -= OnBrickDestroyed;
+            BrickManager.Instance.BrickDamaged   -= OnBrickDamaged;
+            BrickManager.Instance.LevelCleared   -= OnLevelCleared;
+        }
+    }
+
+    private void OnBrickDestroyed(Vector3 _, Color __) { HitStop(0.06f); Shake(0.08f, 0.15f); }
+    private void OnBrickDamaged()                      => HitStop(0.03f);
+    private void OnLevelCleared()                      => Shake(0.20f, 0.40f);
+
     public void HitStop(float seconds) => StartCoroutine(HitStopRoutine(seconds));
 
     public void Shake(float magnitude, float duration)
