@@ -1,147 +1,130 @@
-using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class BallController : MonoBehaviour
 {
     [SerializeField] private PaddleController _paddle;
     [SerializeField] public float BaseSpeed = 8f;
-    [SerializeField] private float _minSpeed = 5f;
+    [SerializeField] public float MinSpeed  = 6f;
+    [SerializeField] public float MaxSpeed  = 18f;
+    [SerializeField] public bool IsMain = true;
 
-    public float Speed => _rb.linearVelocity.magnitude;
+    public static BallController Instance { get; private set; }
 
-    private const float MAX_BOUNCE_ANGLE = 60f;
-    private const float RESPAWN_DELAY    = 1.5f;
-    private const float PADDLE_OFFSET_Y  = 0.4f;
+    public Rigidbody2D    Rb  { get; private set; }
+    public SpriteRenderer Sr  { get; private set; }
+    public PaddleController Paddle => _paddle;
+    public float Speed    => Rb.linearVelocity.magnitude;
+    public Vector2 Velocity => Rb.linearVelocity;
+    public float CurrentSpeed { get; private set; }
 
-    private Rigidbody2D _rb;
-    private bool _waiting = true;
-    private float _currentSpeed;
+    // this four should use type from BallBaseState
+    // Transition between state shouldn't stay in BallController, they should stay in its own state script
+    public BallWaitingState  WaitingState  { get; private set; }
+    public BallFloatingState FloatingState { get; private set; }
+    public BallHittingState  HittingState  { get; private set; }
+    public BallDeadState     DeadState     { get; private set; }
+
+    private const float PADDLE_OFFSET_Y = 0.4f;
+
+    private BallStateBase _state;
     private float _levelMultiplier = 1f;
-    private float _speedModifier   = 1f;
+    private readonly List<float> _speedModifiers = new();
 
-    private float EffectiveSpeed => Mathf.Max(BaseSpeed * _levelMultiplier * _speedModifier, _minSpeed);
+    private float CombinedModifier
+    {
+        get { float r = 1f; foreach (var m in _speedModifiers) r *= m; return r; }
+    }
+
+    public float EffectiveSpeed => Mathf.Clamp(BaseSpeed * _levelMultiplier * CombinedModifier, MinSpeed, MaxSpeed);
 
     void Awake()
     {
-        _rb = GetComponent<Rigidbody2D>();
-        if (_paddle == null) Debug.LogWarning("BallController: PaddleController not assigned.");
+        Rb = GetComponent<Rigidbody2D>();
+        Sr = GetComponent<SpriteRenderer>();
+        if (IsMain)
+        {
+            Instance = this;
+            if (_paddle == null) Debug.LogWarning("BallController: PaddleController not assigned.");
+        }
+        WaitingState  = new BallWaitingState(this);
+        FloatingState = new BallFloatingState(this);
+        HittingState  = new BallHittingState(this);
+        DeadState     = new BallDeadState(this);
     }
 
     void Start()
     {
-        _currentSpeed = EffectiveSpeed;
-        GoToWaiting();
+        if (IsMain)
+        {
+            CurrentSpeed = EffectiveSpeed;
+            TransitionTo(WaitingState);
+        }
         if (GameManager.Instance != null)
             GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
     }
 
     void OnDestroy()
     {
+        if (IsMain && Instance == this) Instance = null;
         if (GameManager.Instance != null)
             GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
     }
 
     private void OnGameStateChanged(GameManager.GameState state)
     {
+        if (!IsMain) return;
         if (state == GameManager.GameState.LevelComplete)
-            GoToWaiting();
+            TransitionTo(WaitingState);
     }
 
-    void Update()
+    public void TransitionTo(BallStateBase newState)
     {
-        if (_waiting && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
-            Launch();
+        _state?.Exit();
+        _state = newState;
+        _state.Enter();
     }
 
-    void FixedUpdate()
-    {
-        if (_waiting) SnapToPaddle();
-    }
+    void Update()       => _state?.Update();
+    void FixedUpdate()  => _state?.FixedUpdate();
 
-    void OnCollisionExit2D(Collision2D col)
-    {
-        if (col.gameObject.CompareTag("Paddle"))
-        {
-            float norm = Mathf.Clamp(
-                (transform.position.x - col.transform.position.x) / col.collider.bounds.extents.x,
-                -1f, 1f);
-            float angle = norm * MAX_BOUNCE_ANGLE * Mathf.Deg2Rad;
-            _rb.linearVelocity = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle)) * _currentSpeed;
-            AudioManager.Instance?.Play(AudioManager.Instance.SfxHitPaddle);
-            return;
-        }
-        _rb.linearVelocity = _rb.linearVelocity.normalized * _currentSpeed;
-        ClampMinSpeed();
-        if (col.gameObject.CompareTag("Wall"))
-            AudioManager.Instance?.Play(AudioManager.Instance.SfxHitWall);
-    }
+    void OnCollisionEnter2D(Collision2D col) => _state?.OnCollisionEnter2D(col);
+    void OnCollisionExit2D(Collision2D col)  => _state?.OnCollisionExit2D(col);
+    void OnTriggerEnter2D(Collider2D other)  => _state?.OnTriggerEnter2D(other);
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (!other.CompareTag("DeathZone")) return;
-        CameraEffects.Instance?.Shake(0.25f, 0.35f);
-        AudioManager.Instance?.Play(AudioManager.Instance.SfxBallLost);
-        if (GameManager.Instance != null) GameManager.Instance.OnBallLost();
-        StartCoroutine(RespawnAfterDelay());
-    }
+    public void SetCurrentSpeed(float speed) { CurrentSpeed = speed; }
 
-    // Per-level base scaling, owned by BrickManager.
     public void SetLevelMultiplier(float multiplier)
     {
         _levelMultiplier = multiplier;
         ApplySpeed();
     }
 
-    // Transient power-up scaling (e.g. SlowBall); 1 = no modifier.
-    public void SetSpeedModifier(float modifier)
+    public void AddSpeedModifier(float m)    { _speedModifiers.Add(m);    ApplySpeed(); }
+    public void RemoveSpeedModifier(float m) { _speedModifiers.Remove(m); ApplySpeed(); }
+    public void ClearSpeedModifiers()        { _speedModifiers.Clear();   ApplySpeed(); }
+
+    public void ApplySpeed()
     {
-        _speedModifier = modifier;
-        ApplySpeed();
+        CurrentSpeed = EffectiveSpeed;
+        if ((_state is BallFloatingState || _state is BallHittingState) &&
+            Rb.bodyType == RigidbodyType2D.Dynamic && Rb.linearVelocity != Vector2.zero)
+            Rb.linearVelocity = Rb.linearVelocity.normalized * CurrentSpeed;
     }
 
-    private void ApplySpeed()
-    {
-        _currentSpeed = EffectiveSpeed;
-        if (!_waiting && _rb.bodyType == RigidbodyType2D.Dynamic && _rb.linearVelocity != Vector2.zero)
-            _rb.linearVelocity = _rb.linearVelocity.normalized * _currentSpeed;
-    }
-
-    private void GoToWaiting()
-    {
-        _waiting = true;
-        _rb.linearVelocity = Vector2.zero;
-        _rb.bodyType = RigidbodyType2D.Kinematic;
-        SnapToPaddle();
-    }
-
-    private void Launch()
-    {
-        _waiting = false;
-        _rb.bodyType = RigidbodyType2D.Dynamic;
-        _rb.linearVelocity = Vector2.up * _currentSpeed;
-    }
-
-    private void SnapToPaddle()
+    public void SnapToPaddlePosition()
     {
         if (_paddle == null) return;
         var pos = _paddle.transform.position;
         transform.position = new Vector3(pos.x, pos.y + PADDLE_OFFSET_Y, 0f);
     }
 
-    private void ClampMinSpeed()
+    public void InitAsAuxiliary(Vector2 velocity, Color color)
     {
-        if (_rb.linearVelocity.magnitude < _minSpeed)
-            _rb.linearVelocity = _rb.linearVelocity.normalized * _minSpeed;
-    }
-
-    private IEnumerator RespawnAfterDelay()
-    {
-        _rb.linearVelocity = Vector2.zero;
-        _rb.bodyType = RigidbodyType2D.Kinematic;
-        yield return new WaitForSeconds(RESPAWN_DELAY);
-        if (GameManager.Instance != null &&
-            GameManager.Instance.State == GameManager.GameState.Playing)
-            GoToWaiting();
+        IsMain = false;
+        if (Sr != null) Sr.color = color;
+        CurrentSpeed = velocity.magnitude;
+        TransitionTo(FloatingState);      // Sets Dynamic; skips launch since !IsMain
+        Rb.linearVelocity = velocity;     // Override with caller-supplied velocity
     }
 }
