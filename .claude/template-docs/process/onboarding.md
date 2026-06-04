@@ -7,7 +7,7 @@
 | Requirement | Version |
 |---|---|
 | Unity Hub | latest |
-| Unity Editor | *(see `.claude/docs/process/build-notes.md`)* |
+| Unity Editor | *(see `.claude/docs/beta/build-notes.md`)* |
 | Claude Code CLI | latest |
 | coplay MCP | installed and connected |
 
@@ -15,7 +15,7 @@
 
 1. Clone the repo
 2. Open Unity Hub → `Add project from disk` → select this folder
-3. Open with the Unity version listed in `.claude/docs/process/build-notes.md`
+3. Open with the Unity version listed in `.claude/docs/beta/build-notes.md`
 4. Wait for asset import to complete
 5. Open the starting scene: `Assets/Scenes/MainMenu.unity`
 6. Press Play to verify the project runs

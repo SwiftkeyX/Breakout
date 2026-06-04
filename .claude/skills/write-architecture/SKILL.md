@@ -12,10 +12,12 @@ Step-skill: writes architecture.md, mapping every system to its script, responsi
 
 | Doc | Read/Write | Purpose |
 |---|---|---|
-| `.claude/docs/design/systems-design.md` | Read | System list, tiers, and dependencies |
-| `.claude/template-docs/technical/architecture.md` | Read | Required structure and communication contract format |
-| `.claude/docs/technical/architecture.md` | Read (if exists) + Write | Output doc |
+| `.claude/docs/preproduction/systems-design.md` | Read | System list, tiers, and dependencies |
+| `.claude/template-docs/preproduction/architecture.md` | Read | Required structure and communication contract format |
+| `.claude/docs/preproduction/architecture.md` | Read (if exists) + Write | Output doc |
 | `.claude/docs/PIPELINE.md` | Read + Write | Tick item on completion |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
+| `.claude/rules-for-skill/rule-pipeline-progression-update.md` | Read | When and how to tick PIPELINE.md |
 
 ---
 
@@ -36,7 +38,7 @@ Step-skill: writes architecture.md, mapping every system to its script, responsi
 4. Define the inter-system communication contract:
    - Which systems may call which directly (tight coupling, explicitly allowed)
    - Which must communicate via events only (loose coupling)
-5. Write `.claude/docs/technical/architecture.md` following the template structure
+5. Write `.claude/docs/preproduction/architecture.md` following the template structure
 6. Update PIPELINE.md: tick `- [x] Fill out architecture.md`
 
 ---
@@ -51,4 +53,3 @@ Step-skill: writes architecture.md, mapping every system to its script, responsi
 
 - Every system in `systems-design.md` must appear in `architecture.md` — no gaps
 - Communication patterns must be explicit — no ambiguous entries
-- On blocking issue: call `/regress`

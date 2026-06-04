@@ -12,19 +12,22 @@ Step-skill: implements one system in Unity from its approved GDD. Run by /produc
 
 | Doc | Read/Write | Purpose |
 |---|---|---|
-| `.claude/docs/design/technical-design/<SystemName>.md` | Read | Approved GDD — implementation source of truth |
-| `.claude/docs/technical/architecture.md` | Read | Communication patterns and allowed references |
-| `.claude/docs/technical/best-practices.md` | Read | Project-critical patterns — override everything |
-| `.claude/docs/technical/technical-preferences.md` | Read | Performance budgets to respect while coding |
+| `.claude/docs/production/technical-design/<SystemName>.md` | Read | Approved GDD — implementation source of truth |
+| `.claude/docs/preproduction/architecture.md` | Read | Communication patterns and allowed references |
+| `.claude/docs/preproduction/best-practices.md` | Read | Project-critical patterns — override everything |
+| `.claude/docs/preproduction/technical-preferences.md` | Read | Performance budgets to respect while coding |
 | `.claude/docs/project-snapshot-index.md` | Read (if exists) + Write | Current scene state; update after changes |
 | `Assets/Scripts/<SystemName>.cs` | Write | Primary output script |
 | `.claude/docs/PIPELINE.md` | Read + Write | Tick system item on successful test |
+| `.claude/rules-for-skill/rule-read-write-unity.md` | Read | Compile check, play/stop, save, snapshot — Unity editor workflow |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
+| `.claude/rules-for-skill/rule-pipeline-progression-update.md` | Read | When and how to tick PIPELINE.md |
 
 ---
 
 ## Entry Condition
 
-GDD at `.claude/docs/design/technical-design/<SystemName>.md` must exist and be approved. If missing, call `/regress "Design <SystemName> GDD" "GDD required before coding"`.
+GDD at `.claude/docs/production/technical-design/<SystemName>.md` must exist and be approved. If missing, call `/regress "Design <SystemName> GDD" "GDD required before coding"`.
 
 ---
 
@@ -55,7 +58,4 @@ GDD at `.claude/docs/design/technical-design/<SystemName>.md` must exist and be 
 ## Constraints
 
 - Never start coding without reading the GDD first
-- Never leave compile errors unfixed
-- Never skip `save_scene`
 - Never tick PIPELINE.md before `play_game` passes
-- On blocking issue rooted in a prior stage (design conflict, architecture mismatch): call `/regress`

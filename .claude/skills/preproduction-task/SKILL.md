@@ -13,6 +13,7 @@ Orchestrator — routes to sub-skills. See sub-skill agent assignments.
 | Doc | Read/Write | Purpose |
 |---|---|---|
 | `.claude/docs/PIPELINE.md` | Read | Find first unchecked Phase 1 item; verify Milestone 0 on exit |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
 
 ---
 
@@ -55,4 +56,3 @@ Milestone 0 = [x] in PIPELINE.md (all 6 docs filled).
 
 - Never skip a step-skill — run every unchecked item in order
 - Never modify `template-docs/` files
-- On blocking issue in any step-skill: call `/regress` — do not attempt to fix it here

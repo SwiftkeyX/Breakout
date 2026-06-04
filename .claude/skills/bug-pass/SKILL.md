@@ -13,9 +13,12 @@ Step-skill: fixes all open bugs in known-issues.md one at a time, verifying each
 | Doc | Read/Write | Purpose |
 |---|---|---|
 | `.claude/docs/project-snapshot-index.md` | Read | Current scene hierarchy and scripts — quickly locate affected scripts and components |
-| `.claude/docs/process/known-issues.md` | Read + Write | Source of all bugs; mark each resolved |
+| `.claude/docs/beta/known-issues.md` | Read + Write | Source of all bugs; mark each resolved |
 | Affected `Assets/Scripts/*.cs` | Read + Write | Scripts being fixed |
 | `.claude/docs/PIPELINE.md` | Read + Write | Tick item when all bugs are resolved |
+| `.claude/rules-for-skill/rule-read-write-unity.md` | Read | Compile check, play/stop, save, snapshot — Unity editor workflow |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
+| `.claude/rules-for-skill/rule-pipeline-progression-update.md` | Read | When and how to tick PIPELINE.md |
 
 ---
 
@@ -50,4 +53,3 @@ Phase 3 is active. `known-issues.md` must exist.
 
 - Fix and verify one issue at a time — never batch fixes without individual tests
 - Never tick Bug pass before the Open table is clear
-- On design-rooted bug: call `/regress` — do not patch at the symptom level

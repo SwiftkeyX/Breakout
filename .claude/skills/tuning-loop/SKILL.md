@@ -13,9 +13,12 @@ Step-skill: guided iterative tuning loop for feel and difficulty passes. Propose
 | Doc | Read/Write | Purpose |
 |---|---|---|
 | `.claude/docs/project-snapshot-index.md` | Read | Current scene hierarchy and scripts — locate exposed fields before auditing values |
-| `.claude/docs/design/game-vision.md` | Read | Feel pillars and Difficulty Curve spec — the target for both passes |
+| `.claude/docs/preproduction/game-vision.md` | Read | Feel pillars and Difficulty Curve spec — the target for both passes |
 | `.claude/docs/PIPELINE.md` | Read + Write | Identify which pass is active; tick item on completion |
 | Inspector / ScriptableObject assets | Write | Only output — no script files are modified |
+| `.claude/rules-for-skill/rule-read-write-unity.md` | Read | Compile check, play/stop, save, snapshot — Unity editor workflow |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
+| `.claude/rules-for-skill/rule-pipeline-progression-update.md` | Read | When and how to tick PIPELINE.md |
 
 ---
 
@@ -29,7 +32,7 @@ Phase 3 is active. `game-vision.md` must exist with both feel pillars and a Diff
 
 Read `.claude/docs/PIPELINE.md` to determine whether this is a **feel tuning** or **difficulty tuning** pass (whichever is the first unchecked item).
 
-Read `.claude/docs/design/game-vision.md`:
+Read `.claude/docs/preproduction/game-vision.md`:
 - For **feel tuning**: review the feel pillars (e.g. Chaotic · Explosive · Fun) and intended player experience
 - For **difficulty tuning**: review the Difficulty Curve section (level count, HP scaling, speed ramp, pacing targets)
 
@@ -92,4 +95,3 @@ User explicitly confirms the pass matches `game-vision.md`. PIPELINE.md item tic
 - One change per iteration — never batch multiple parameter edits between play tests
 - Always state what to observe before calling `play_game`
 - Never tick PIPELINE.md until the user explicitly confirms the gate passes
-- On blocking issue: call `/regress`

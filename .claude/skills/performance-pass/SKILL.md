@@ -13,9 +13,12 @@ Step-skill: profiles the game and optimizes scripts until GC allocs and frame ti
 | Doc | Read/Write | Purpose |
 |---|---|---|
 | `.claude/docs/project-snapshot-index.md` | Read | Current scene hierarchy and scripts — full inventory of scripts to identify hotspot candidates |
-| `.claude/docs/technical/technical-preferences.md` | Read | Performance budgets: target frame rate, GC alloc limit, draw call budget |
+| `.claude/docs/preproduction/technical-preferences.md` | Read | Performance budgets: target frame rate, GC alloc limit, draw call budget |
 | Affected `Assets/Scripts/*.cs` | Read + Write | Scripts being optimized |
 | `.claude/docs/PIPELINE.md` | Read + Write | Tick item when budgets are met |
+| `.claude/rules-for-skill/rule-read-write-unity.md` | Read | Compile check, play/stop, save, snapshot — Unity editor workflow |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
+| `.claude/rules-for-skill/rule-pipeline-progression-update.md` | Read | When and how to tick PIPELINE.md |
 
 ---
 
@@ -49,4 +52,3 @@ Phase 3 is active. `technical-preferences.md` must exist with defined budget val
 ## Constraints
 
 - Never tick before re-profiling — verify with tools, not by code inspection
-- On blocking issue: call `/regress`

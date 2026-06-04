@@ -13,8 +13,8 @@ Pipeline enforcer: reads PIPELINE.md, reports current stage, detects regressions
 | Doc | Read/Write | Purpose |
 |---|---|---|
 | `.claude/docs/PIPELINE.md` | Read + Write | Source of truth for all gate checks and checkbox updates |
-| `.claude/docs/process/known-issues.md` | Read | Bug pass gate validation |
-| `.claude/docs/process/build-notes.md` | Read | Ship gate validation |
+| `.claude/docs/beta/known-issues.md` | Read | Bug pass gate validation |
+| `.claude/docs/beta/build-notes.md` | Read | Ship gate validation |
 
 ---
 
@@ -66,7 +66,7 @@ Ask the user directly:
 Only tick on explicit "yes."
 
 **Bug pass:**
-Read `.claude/docs/process/known-issues.md`. If the Open table has any real rows (not the `*(no issues yet)*` placeholder), list every open item and refuse to tick until all are resolved.
+Read `.claude/docs/beta/known-issues.md`. If the Open table has any real rows (not the `*(no issues yet)*` placeholder), list every open item and refuse to tick until all are resolved.
 
 **Performance pass:**
 Call `get_worst_gc_frames`. If any steady-state frame shows non-zero GC alloc, report the worst offender and refuse to tick. Also verify all frames are under 16.6ms.

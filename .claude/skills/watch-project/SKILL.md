@@ -14,7 +14,7 @@ Call `check_compile_errors`. If errors exist, report each one and stop — do no
 
 ## Step 2 — Open bug count
 
-Read `.claude/docs/process/known-issues.md`. Count real rows in the Open table (ignore the `*(no issues yet)*` placeholder). Report: "Open bugs: N"
+Read `.claude/docs/beta/known-issues.md`. Count real rows in the Open table (ignore the `*(no issues yet)*` placeholder). Report: "Open bugs: N"
 
 ## Step 3 — GC health
 

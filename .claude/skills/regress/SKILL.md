@@ -13,7 +13,7 @@ Regression trigger: un-checks a PIPELINE.md item, logs the regression in known-i
 | Doc | Read/Write | Purpose |
 |---|---|---|
 | `.claude/docs/PIPELINE.md` | Read + Write | Find and un-check the named item |
-| `.claude/docs/process/known-issues.md` | Read + Write | Log the regression entry |
+| `.claude/docs/beta/known-issues.md` | Read + Write | Log the regression entry |
 
 ---
 
@@ -31,7 +31,7 @@ Can be called from any stage. No pipeline state prerequisite — regression is a
 2. **Find** the line matching the item name — if no unique match, report the ambiguity and ask the user to clarify before proceeding
 3. **Un-check** it: change `- [x]` → `- [ ]` on that line only
 4. **Write** the updated PIPELINE.md
-5. **Read** `.claude/docs/process/known-issues.md`
+5. **Read** `.claude/docs/beta/known-issues.md`
 6. **Add** a row to the Open table:
 
    | Date | Item | Reason | Regressed from |

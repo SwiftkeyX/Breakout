@@ -1,9 +1,9 @@
 # Coding Style
 
 > HOW to write code in this project — naming, structure, and anti-patterns.
-> For WHAT scripts exist and how they communicate, see `.claude/docs/technical/architecture.md`.
+> For WHAT scripts exist and how they communicate, see `.claude/docs/preproduction/architecture.md`.
 > For Unity 6 pattern choices (Input System, UI Toolkit, etc.), see `best-practices.md`.
-> For tech-stack level forbidden patterns (banned libraries, subsystems), see `.claude/docs/technical/technical-preferences.md`.
+> For tech-stack level forbidden patterns (banned libraries, subsystems), see `.claude/docs/preproduction/technical-preferences.md`.
 
 ## Naming Conventions
 

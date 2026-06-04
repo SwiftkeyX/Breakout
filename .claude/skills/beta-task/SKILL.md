@@ -13,6 +13,7 @@ Orchestrator — routes to sub-skills. See sub-skill agent assignments.
 | Doc | Read/Write | Purpose |
 |---|---|---|
 | `.claude/docs/PIPELINE.md` | Read | Verify entry condition; find first unchecked Phase 3 item |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
 
 ---
 
@@ -56,4 +57,3 @@ Ship gate passed — all Phase 3 items checked.
 ## Constraints
 
 - Never skip a step-skill — all items must be run in order
-- On blocking issue rooted in a prior stage: call `/regress`

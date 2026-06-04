@@ -12,7 +12,7 @@ Lightweight bug logger: captures one bug immediately without derailing the curre
 
 | Doc | Read/Write | Purpose |
 |---|---|---|
-| `.claude/docs/process/known-issues.md` | Read + Write | Append the new bug to the Open table |
+| `.claude/docs/beta/known-issues.md` | Read + Write | Append the new bug to the Open table |
 
 ---
 

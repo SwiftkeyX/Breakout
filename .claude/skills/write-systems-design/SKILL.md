@@ -12,11 +12,13 @@ Step-skill: writes systems-design.md, listing every game system with its tier an
 
 | Doc | Read/Write | Purpose |
 |---|---|---|
-| `.claude/docs/design/game-vision.md` | Read | Derive systems from the intended player experience |
-| `.claude/docs/design/design-decisions.md` | Read | Confirm scope before listing systems |
-| `.claude/template-docs/design/systems-design.md` | Read | Required structure |
-| `.claude/docs/design/systems-design.md` | Read (if exists) + Write | Output doc |
+| `.claude/docs/preproduction/game-vision.md` | Read | Derive systems from the intended player experience |
+| `.claude/docs/preproduction/design-decisions.md` | Read | Confirm scope before listing systems |
+| `.claude/template-docs/preproduction/systems-design.md` | Read | Required structure |
+| `.claude/docs/preproduction/systems-design.md` | Read (if exists) + Write | Output doc |
 | `.claude/docs/PIPELINE.md` | Read + Write | Tick item on completion |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
+| `.claude/rules-for-skill/rule-pipeline-progression-update.md` | Read | When and how to tick PIPELINE.md |
 
 ---
 
@@ -36,7 +38,7 @@ Step-skill: writes systems-design.md, listing every game system with its tier an
    - **Tier 3 — Supporting:** scoring, UI, audio, power-ups, extras
 4. For each system record: name, one-line responsibility, tier, and dependencies (which systems it requires to function)
 5. Present the system list to the user and ask for confirmation or changes before writing
-6. Write `.claude/docs/design/systems-design.md` following the template structure
+6. Write `.claude/docs/preproduction/systems-design.md` following the template structure
 7. Update PIPELINE.md: tick `- [x] Fill out systems-design.md`
 
 ---
@@ -51,4 +53,3 @@ Step-skill: writes systems-design.md, listing every game system with its tier an
 
 - Every system must have a tier assignment — no untiered systems
 - Every system that appears in Phase 2 of PIPELINE.md must be listed here first
-- On blocking issue: call `/regress`

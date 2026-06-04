@@ -87,7 +87,7 @@ Group by source file:
 ```
 FILE: docs/process/onboarding.md
   Line 18  `docs/build-notes.md`  → [FILE NOT FOUND]
-            Likely intended: docs/process/build-notes.md
+            Likely intended: docs/beta/build-notes.md
 ```
 
 When a broken path has exactly one Glob match by filename anywhere in the project, add a "Likely intended:" line.
@@ -96,7 +96,7 @@ When a broken path has exactly one Glob match by filename anywhere in the projec
 
 ```
 CLAUDE.md doc index — files on disk not listed:
-  docs/process/changelog.md
+  docs/beta/changelog.md
 
 README.md — rows for files that no longer exist:
   (none)

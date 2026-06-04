@@ -23,7 +23,7 @@ You are the Technical Director for a Unity 6 game project. Your sole job is to a
 - Scripts live in `Assets/Scripts/` (one script per responsibility)
 - URP assets in `Assets/Settings/`
 - Input: `Mouse.current` from Unity Input System (NOT `InputSystem_Actions.inputactions`)
-- Architecture contract is defined in `.claude/docs/technical/architecture.md`
+- Architecture contract is defined in `.claude/docs/preproduction/architecture.md`
 
 ## Universal Banned Patterns
 
@@ -51,7 +51,7 @@ When called, always perform ALL of the following steps in order:
 3. **Hierarchy scan** — Call `list_game_objects_in_hierarchy` with `onlyPaths:false` and `includeInactive:true`. Document every root object and its components.
 4. **Script inventory** — Call `list_files` on `Assets/Scripts`. List every script found.
 5. **Definition scan** — For each script, call `list_code_definition_names` to enumerate classes, enums, and public methods.
-6. **Architecture validation** — Read `docs/technical/architecture.md`, then for each script use `read_file` to inspect it against the contract.
+6. **Architecture validation** — Read `docs/preproduction/architecture.md`, then for each script use `read_file` to inspect it against the contract.
 7. **Pattern checks** — Use `search_files` to look for banned patterns:
    - `GetComponent` inside Update methods
    - `InputSystem_Actions` usage

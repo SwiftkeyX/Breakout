@@ -16,9 +16,12 @@ Step-skill: adds all juice elements — screen shake, particles, hit-stop, SFX, 
 | Doc | Read/Write | Purpose |
 |---|---|---|
 | `.claude/docs/project-snapshot-index.md` | Read | Current scene hierarchy, scripts, and assets — understand what exists before adding juice |
-| `.claude/docs/design/game-vision.md` | Read | Feel pillars and intended player experience to guide juice direction |
-| `.claude/docs/technical/technical-preferences.md` | Read | Performance budgets — juice must not exceed frame rate or GC limits |
+| `.claude/docs/preproduction/game-vision.md` | Read | Feel pillars and intended player experience to guide juice direction |
+| `.claude/docs/preproduction/technical-preferences.md` | Read | Performance budgets — juice must not exceed frame rate or GC limits |
 | `.claude/docs/PIPELINE.md` | Read + Write | Tick item on completion |
+| `.claude/rules-for-skill/rule-read-write-unity.md` | Read | Compile check, play/stop, save, snapshot — Unity editor workflow |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
+| `.claude/rules-for-skill/rule-pipeline-progression-update.md` | Read | When and how to tick PIPELINE.md |
 
 ---
 
@@ -59,4 +62,3 @@ All 6 juice categories implemented and tested. Full play pass confirms feel alig
 
 - Each category must compile-check and pass `play_game` before moving to the next
 - Check `get_worst_gc_frames` after adding particles — must stay within budget
-- On blocking issue: call `/regress`

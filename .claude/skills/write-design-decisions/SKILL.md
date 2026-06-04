@@ -12,9 +12,11 @@ Step-skill: writes design-decisions.md, deriving key decisions from game-vision.
 
 | Doc | Read/Write | Purpose |
 |---|---|---|
-| `.claude/docs/design/game-vision.md` | Read | Source — derive decisions from the vision |
-| `.claude/docs/design/design-decisions.md` | Read (if exists) + Write | Output doc |
+| `.claude/docs/preproduction/game-vision.md` | Read | Source — derive decisions from the vision |
+| `.claude/docs/preproduction/design-decisions.md` | Read (if exists) + Write | Output doc |
 | `.claude/docs/PIPELINE.md` | Read + Write | Tick item on completion |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
+| `.claude/rules-for-skill/rule-pipeline-progression-update.md` | Read | When and how to tick PIPELINE.md |
 
 ---
 
@@ -34,7 +36,7 @@ Step-skill: writes design-decisions.md, deriving key decisions from game-vision.
    - Non-obvious choices that need justification (why this approach over alternatives)
    - Scope boundaries (what features are in vs. out)
 4. Ask the user to confirm or add decisions before writing
-5. Write `.claude/docs/design/design-decisions.md`
+5. Write `.claude/docs/preproduction/design-decisions.md`
 6. Update PIPELINE.md: tick `- [x] Fill out design-decisions.md`
 
 ---
@@ -48,4 +50,3 @@ Step-skill: writes design-decisions.md, deriving key decisions from game-vision.
 ## Constraints
 
 - Derive decisions from `game-vision.md` — do not invent decisions the vision does not support
-- On blocking issue: call `/regress`

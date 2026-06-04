@@ -16,8 +16,11 @@ Step-skill: executes the release checklist in build-notes.md and ships the final
 | Doc | Read/Write | Purpose |
 |---|---|---|
 | `.claude/docs/project-snapshot-index.md` | Read | Current scene hierarchy — verify scene is complete before smoke test |
-| `.claude/docs/process/build-notes.md` | Read + Write | Release checklist and build steps; tick each item as completed |
+| `.claude/docs/beta/build-notes.md` | Read + Write | Release checklist and build steps; tick each item as completed |
 | `.claude/docs/PIPELINE.md` | Read + Write | Confirm all prior Phase 3 items are checked; tick Ship |
+| `.claude/rules-for-skill/rule-read-write-unity.md` | Read | Compile check, play/stop, save, snapshot — Unity editor workflow |
+| `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
+| `.claude/rules-for-skill/rule-pipeline-progression-update.md` | Read | When and how to tick PIPELINE.md |
 
 ---
 
@@ -54,4 +57,3 @@ All `build-notes.md` checklist items ticked. PIPELINE.md Ship item checked. All 
 
 - Never attempt the build if any prior Phase 3 item is unchecked
 - Never skip the smoke test
-- On blocking issue: call `/regress`
