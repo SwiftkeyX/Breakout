@@ -17,7 +17,9 @@ public class ScoreManager : MonoBehaviour
 
     public void AddScore(int amount)
     {
-        Score += amount;
+        float speed = BallController.Instance != null ? BallController.Instance.Speed : 0f;
+        float mul   = Mathf.Max(1f, speed / 10f);
+        Score += Mathf.RoundToInt(amount * mul);
         OnScoreChanged?.Invoke(Score);
     }
 
