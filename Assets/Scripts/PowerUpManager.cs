@@ -1,43 +1,56 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This should have reference to each Powerup class
+/// This class shouldn't have logic for how the powerup work?
+/// </summary>
 public class PowerUpManager : MonoBehaviour
 {
     [SerializeField] private GameObject _powerUpPrefab;
-    [SerializeField] private PaddleController _paddle;
-    [SerializeField] private BallController _ball;
+    [SerializeField] private GameObject _ballPrefab;
 
-    [SerializeField] private float _dropChance     = 0.3f;
-    [SerializeField] private float _fallSpeed      = 3f;
-    [SerializeField] private float _expandDuration = 10f;
-    [SerializeField] private float _expandScaleX   = 5f;
-    [SerializeField] private float _slowDuration   = 8f;
-    [SerializeField] private float _slowMultiplier = 0.6f;
+    [SerializeField] private float _dropChance    = 0.55f;
+    [SerializeField] private float _fallSpeed     = 5f;
+    [SerializeField] private float _speedBoostMul = 1.5f;
+    [SerializeField] private float _speedBoostDur = 5f;
 
-    private Coroutine _expandCoroutine;
-    private Coroutine _slowCoroutine;
-    private float _paddleBaseScaleX = 1f;
+    private readonly List<BallController> _auxBalls = new();
+    private Coroutine _speedBoostCoroutine;
+    private float _activeSpeedBoostMul;
 
     void Start()
     {
-        if (_paddle != null) _paddleBaseScaleX = _paddle.transform.localScale.x;
         if (GameManager.Instance != null)
+        {
             GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+            GameManager.Instance.OnLivesChanged     += OnLivesChanged;
+        }
     }
 
     void OnDestroy()
     {
         if (GameManager.Instance != null)
+        {
             GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
+            GameManager.Instance.OnLivesChanged     -= OnLivesChanged;
+        }
     }
 
     private void OnGameStateChanged(GameManager.GameState state)
     {
-        if (state != GameManager.GameState.LevelComplete) return;
-        if (_expandCoroutine != null) { StopCoroutine(_expandCoroutine); _expandCoroutine = null; }
-        if (_slowCoroutine   != null) { StopCoroutine(_slowCoroutine);   _slowCoroutine   = null; }
-        if (_paddle != null) _paddle.SetWidth(_paddleBaseScaleX);
-        if (_ball   != null) _ball.SetSpeedModifier(1f);
+        if (state == GameManager.GameState.LevelComplete)
+        {
+            ClearAuxBalls();
+            StopSpeedBoost();
+        }
+    }
+
+    private void OnLivesChanged(int _)
+    {
+        ClearAuxBalls();
+        StopSpeedBoost();
     }
 
     public void TrySpawnDrop(Vector3 position)
@@ -53,32 +66,63 @@ public class PowerUpManager : MonoBehaviour
     {
         switch (type)
         {
-            case PowerUpType.ExpandPaddle:
-                if (_expandCoroutine != null) StopCoroutine(_expandCoroutine);
-                _expandCoroutine = StartCoroutine(ExpandPaddleEffect());
+            case PowerUpType.TripleBall:
+                SpawnTripleBalls();
                 break;
-            case PowerUpType.SlowBall:
-                if (_slowCoroutine != null) StopCoroutine(_slowCoroutine);
-                _slowCoroutine = StartCoroutine(SlowBallEffect());
+            case PowerUpType.SpeedBoost:
+                if (_speedBoostCoroutine != null) StopCoroutine(_speedBoostCoroutine);
+                _speedBoostCoroutine = StartCoroutine(SpeedBoostEffect());
                 break;
         }
     }
 
-    private IEnumerator ExpandPaddleEffect()
+    private void SpawnTripleBalls()
     {
-        if (_paddle == null) yield break;
-        _paddle.SetWidth(_expandScaleX);
-        yield return new WaitForSeconds(_expandDuration);
-        _paddle.SetWidth(_paddleBaseScaleX);
-        _expandCoroutine = null;
+        if (_ballPrefab == null || BallController.Instance == null) return;
+        Vector2 baseVel = BallController.Instance.Velocity;
+        if (baseVel == Vector2.zero) return;
+        float speed = baseVel.magnitude;
+        var magenta = new Color(1f, 0.15f, 0.85f);
+        SpawnAuxBall(Rotate(baseVel,  30f).normalized * speed, magenta);
+        SpawnAuxBall(Rotate(baseVel, -30f).normalized * speed, magenta);
     }
 
-    private IEnumerator SlowBallEffect()
+    private void SpawnAuxBall(Vector2 velocity, Color color)
     {
-        if (_ball == null) yield break;
-        _ball.SetSpeedModifier(_slowMultiplier);
-        yield return new WaitForSeconds(_slowDuration);
-        _ball.SetSpeedModifier(1f);
-        _slowCoroutine = null;
+        var go   = Instantiate(_ballPrefab, BallController.Instance.transform.position, Quaternion.identity);
+        var ball = go.GetComponent<BallController>();
+        ball.InitAsAuxiliary(velocity, color);
+        _auxBalls.Add(ball);
+    }
+
+    private IEnumerator SpeedBoostEffect()
+    {
+        _activeSpeedBoostMul = _speedBoostMul;
+        BallController.Instance?.AddSpeedModifier(_activeSpeedBoostMul);
+        yield return new WaitForSeconds(_speedBoostDur);
+        BallController.Instance?.RemoveSpeedModifier(_activeSpeedBoostMul);
+        _speedBoostCoroutine = null;
+    }
+
+    private void StopSpeedBoost()
+    {
+        if (_speedBoostCoroutine == null) return;
+        StopCoroutine(_speedBoostCoroutine);
+        _speedBoostCoroutine = null;
+        BallController.Instance?.RemoveSpeedModifier(_activeSpeedBoostMul);
+    }
+
+    private void ClearAuxBalls()
+    {
+        foreach (var b in _auxBalls)
+            if (b != null) Destroy(b.gameObject);
+        _auxBalls.Clear();
+    }
+
+    private static Vector2 Rotate(Vector2 v, float degrees)
+    {
+        float rad = degrees * Mathf.Deg2Rad;
+        float cos = Mathf.Cos(rad), sin = Mathf.Sin(rad);
+        return new Vector2(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
     }
 }
