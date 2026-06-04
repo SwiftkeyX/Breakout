@@ -11,11 +11,6 @@ public class ParticlePool : MonoBehaviour
     private ParticleSystem[] _pool;
     private int _index;
 
-    /// <summary>
-    /// BrickManager is the singleton.
-    /// You should reference to it like this: BrickManager.Instance.Do();
-    /// Why did you create variable reference to it.
-    /// </summary>
     private BrickManager _brickManager;
 
     void Awake()
@@ -44,7 +39,9 @@ public class ParticlePool : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         UnsubscribeBrickManager();
-        BrickManager.Instance.BrickDestroyed += OnBrickDestroyed;
+        _brickManager = BrickManager.Instance;
+        if (_brickManager != null)
+            _brickManager.BrickDestroyed += OnBrickDestroyed;
     }
 
     private void OnSceneUnloaded(Scene scene) => UnsubscribeBrickManager();

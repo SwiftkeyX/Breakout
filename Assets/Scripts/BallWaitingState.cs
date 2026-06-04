@@ -15,7 +15,7 @@ public class BallWaitingState : BallStateBase
     public override void Update()
     {
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
-            Ball.TransitionTo(Ball.FloatingState);
+            ChangeState(Ball.FloatingState);
     }
 
     public override void FixedUpdate() => Ball.SnapToPaddlePosition();

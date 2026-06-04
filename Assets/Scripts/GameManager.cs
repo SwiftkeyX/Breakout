@@ -48,11 +48,6 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneUnloaded(Scene scene) => UnsubscribeBrickManager();
 
-    /// <summary>
-    /// BrickManager is the singleton.
-    /// You should reference to it like this: BrickManager.Instance.Do();
-    /// Why did you create variable reference to it.
-    /// </summary>
     private void UnsubscribeBrickManager()
     {
         if (_brickManager != null)

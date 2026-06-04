@@ -18,12 +18,10 @@ public class BallController : MonoBehaviour
     public Vector2 Velocity => Rb.linearVelocity;
     public float CurrentSpeed { get; private set; }
 
-    // this four should use type from BallBaseState
-    // Transition between state shouldn't stay in BallController, they should stay in its own state script
-    public BallWaitingState  WaitingState  { get; private set; }
-    public BallFloatingState FloatingState { get; private set; }
-    public BallHittingState  HittingState  { get; private set; }
-    public BallDeadState     DeadState     { get; private set; }
+    public BallStateBase WaitingState  { get; private set; }
+    public BallStateBase FloatingState { get; private set; }
+    public BallStateBase HittingState  { get; private set; }
+    public BallStateBase DeadState     { get; private set; }
 
     private const float PADDLE_OFFSET_Y = 0.4f;
 
@@ -124,7 +122,7 @@ public class BallController : MonoBehaviour
         IsMain = false;
         if (Sr != null) Sr.color = color;
         CurrentSpeed = velocity.magnitude;
-        TransitionTo(FloatingState);      // Sets Dynamic; skips launch since !IsMain
-        Rb.linearVelocity = velocity;     // Override with caller-supplied velocity
+        TransitionTo(FloatingState);
+        Rb.linearVelocity = velocity;
     }
 }

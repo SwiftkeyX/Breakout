@@ -44,8 +44,6 @@ public class BrickManager : MonoBehaviour
             GameManager.Instance.OnGameStateChanged -= OnGameStateChanged;
     }
 
-    // A brick reached 0 HP. The manager fires events — audio, effects, and game state
-    // are handled by subscribers, not here.
     public void OnBrickDestroyed(BrickData data, Vector3 position)
     {
         BrickDestroyed?.Invoke(position, data.FullHealthColor);

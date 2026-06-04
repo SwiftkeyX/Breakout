@@ -13,13 +13,13 @@ public class BallFloatingState : BallStateBase
 
     public override void OnCollisionEnter2D(Collision2D col)
     {
-        Ball.TransitionTo(Ball.HittingState);
+        ChangeState(Ball.HittingState);
     }
 
     public override void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("DeathZone")) return;
         if (!Ball.IsMain) { Object.Destroy(Ball.gameObject); return; }
-        Ball.TransitionTo(Ball.DeadState);
+        ChangeState(Ball.DeadState);
     }
 }

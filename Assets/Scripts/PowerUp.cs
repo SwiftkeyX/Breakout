@@ -1,29 +1,17 @@
 using UnityEngine;
 
-// Don't 
 public class PowerUp : MonoBehaviour
 {
-    private PowerUpType _type;
+    private BasePowerUp _effect;
     private float _speed;
     private PowerUpManager _manager;
 
-    /// <summary>
-    /// Don't hard code color
-    /// Make them more flexible, imagine we need to add new powerup in the future.
-    /// My approach: 
-    /// Each powerup should have its own class, and each color should be state inside those class, not here.
-    /// Each Powerup should inherit from abstract class BasePowerUp.cs instead
-    /// PickUp() effect should be inside each Powerup class
-    /// 
-    /// </summary>
-    public void Init(PowerUpType type, float speed, PowerUpManager manager)
+    public void Init(BasePowerUp effect, float speed, PowerUpManager manager)
     {
-        _type    = type;
+        _effect  = effect;
         _speed   = speed;
         _manager = manager;
-        GetComponent<SpriteRenderer>().color = (type == PowerUpType.TripleBall)
-            ? new Color(1f, 0.15f, 0.85f)
-            : new Color(1f, 0.5f, 0f);
+        GetComponent<SpriteRenderer>().color = effect.Color;
     }
 
     void Update() => transform.Translate(Vector2.down * _speed * Time.deltaTime);
@@ -32,8 +20,8 @@ public class PowerUp : MonoBehaviour
     {
         if (!other.CompareTag("Paddle")) return;
         AudioManager.Instance?.Play(AudioManager.Instance.SfxPowerUp);
-        _manager.OnPickup(_type);
-        Destroy(gameObject); 
+        _effect.PickUp(_manager);
+        Destroy(gameObject);
     }
 
     void OnBecameInvisible() => Destroy(gameObject);

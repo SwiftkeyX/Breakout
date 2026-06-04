@@ -2,10 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// This should have reference to each Powerup class
-/// This class shouldn't have logic for how the powerup work?
-/// </summary>
 public class PowerUpManager : MonoBehaviour
 {
     [SerializeField] private GameObject _powerUpPrefab;
@@ -16,6 +12,7 @@ public class PowerUpManager : MonoBehaviour
     [SerializeField] private float _speedBoostMul = 1.5f;
     [SerializeField] private float _speedBoostDur = 5f;
 
+    private readonly BasePowerUp[] _powerUps = { new TripleBallPowerUp(), new SpeedBoostPowerUp() };
     private readonly List<BallController> _auxBalls = new();
     private Coroutine _speedBoostCoroutine;
     private float _activeSpeedBoostMul;
@@ -57,23 +54,17 @@ public class PowerUpManager : MonoBehaviour
     {
         if (_powerUpPrefab == null) return;
         if (Random.value > _dropChance) return;
-        var type = (PowerUpType)Random.Range(0, 2);
+        var effect = _powerUps[Random.Range(0, _powerUps.Length)];
         var go = Instantiate(_powerUpPrefab, position, Quaternion.identity);
-        go.GetComponent<PowerUp>().Init(type, _fallSpeed, this);
+        go.GetComponent<PowerUp>().Init(effect, _fallSpeed, this);
     }
 
-    public void OnPickup(PowerUpType type)
+    public void ApplyTripleBall() => SpawnTripleBalls();
+
+    public void ApplySpeedBoost()
     {
-        switch (type)
-        {
-            case PowerUpType.TripleBall:
-                SpawnTripleBalls();
-                break;
-            case PowerUpType.SpeedBoost:
-                if (_speedBoostCoroutine != null) StopCoroutine(_speedBoostCoroutine);
-                _speedBoostCoroutine = StartCoroutine(SpeedBoostEffect());
-                break;
-        }
+        if (_speedBoostCoroutine != null) StopCoroutine(_speedBoostCoroutine);
+        _speedBoostCoroutine = StartCoroutine(SpeedBoostEffect());
     }
 
     private void SpawnTripleBalls()

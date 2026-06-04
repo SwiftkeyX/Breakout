@@ -25,7 +25,7 @@ public class BallHittingState : BallStateBase
                 AudioManager.Instance?.Play(AudioManager.Instance.SfxHitWall);
         }
 
-        Ball.TransitionTo(Ball.FloatingState);
+        ChangeState(Ball.FloatingState);
     }
 
     // Guard: handles the unlikely case the ball reaches DeathZone while mid-bounce.
@@ -33,7 +33,7 @@ public class BallHittingState : BallStateBase
     {
         if (!other.CompareTag("DeathZone")) return;
         if (!Ball.IsMain) { Object.Destroy(Ball.gameObject); return; }
-        Ball.TransitionTo(Ball.DeadState);
+        ChangeState(Ball.DeadState);
     }
 
     private void ClampMinSpeed()

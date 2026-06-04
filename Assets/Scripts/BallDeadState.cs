@@ -20,6 +20,6 @@ public class BallDeadState : BallStateBase
     private IEnumerator RespawnRoutine()
     {
         yield return new WaitForSeconds(RESPAWN_DELAY);
-        Ball.TransitionTo(Ball.WaitingState);
+        ChangeState(Ball.WaitingState);
     }
 }

@@ -1,12 +1,12 @@
 using UnityEngine;
 
-// Add ChangeState(), use this to transition between state
-// Each children need to implement it 
 public abstract class BallStateBase
 {
     protected BallController Ball { get; }
 
     protected BallStateBase(BallController ball) { Ball = ball; }
+
+    protected void ChangeState(BallStateBase next) => Ball.TransitionTo(next);
 
     public virtual void Enter() { }
     public virtual void Exit() { }
