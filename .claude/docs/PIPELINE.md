@@ -54,7 +54,7 @@
   - **Gate:** User confirms feel matches the Chaotic · Explosive · Fun pillars in `game-vision.md`
 - [ ] Difficulty tuning — curve, pacing, escalation
   - **Gate:** User confirms the difficulty curve feels intentional and escalates correctly across all levels
-- [ ] Bug pass — all known issues fixed (`.claude/docs/process/known-issues.md` clear)
+- [ ] Bug pass — all known issues fixed (`.claude/docs/beta/known-issues.md` clear)
   - **Gate:** `known-issues.md` Open table contains no rows (only the placeholder or empty)
 - [ ] Performance pass — GC allocs and frame rate within budgets (`.claude/docs/technical/technical-preferences.md`)
   - **Gate:** `get_worst_gc_frames` shows zero alloc in steady-state gameplay; all frames under 16.6ms
