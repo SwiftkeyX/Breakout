@@ -32,7 +32,7 @@ public class CameraEffects : MonoBehaviour
         }
     }
 
-    private void OnBrickDestroyed(Vector3 _, Color __) { HitStop(0.06f); Shake(0.08f, 0.15f); }
+    private void OnBrickDestroyed(Vector3 _, Color __) { HitStop(0.10f); Shake(0.5f, 0.15f); }
     private void OnBrickDamaged()                      => HitStop(0.03f);
     private void OnLevelCleared()                      => Shake(0.20f, 0.40f);
 
