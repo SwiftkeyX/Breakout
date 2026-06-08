@@ -43,7 +43,6 @@ No explicit state machine — PaddleController runs continuously while in the Ga
 |---|---|
 | `InputHandler` | Reads `PaddleTargetX` each FixedUpdate |
 | `BallController` | Ball reads `transform.position` + `Width` for respawn positioning and bounce angle |
-| `PowerUpManager` | Calls `SetWidth(float)` to temporarily resize the Paddle (Tier 3) |
 
 ---
 
@@ -74,7 +73,6 @@ rightBound =  halfWidth - paddleHalfWidth
 |---|---|---|
 | `InputHandler` | This depends on it | Data dependency — reads PaddleTargetX |
 | `BallController` | It depends on this | Data dependency — reads position and Width |
-| `PowerUpManager` | It depends on this | Rule dependency — resizes via SetWidth (Tier 3) |
 
 ---
 

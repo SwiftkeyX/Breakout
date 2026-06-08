@@ -12,7 +12,7 @@ Step-skill: implements one system in Unity from its approved GDD. Run by /produc
 
 | Doc | Read/Write | Purpose |
 |---|---|---|
-| `.claude/docs/production/technical-design/<SystemName>.md` | Read | Approved GDD — implementation source of truth |
+| `.claude/docs/production/gdd/<SystemName>.md` | Read | Approved GDD — implementation source of truth |
 | `.claude/docs/preproduction/architecture.md` | Read | Communication patterns and allowed references |
 | `.claude/docs/preproduction/best-practices.md` | Read | Project-critical patterns — override everything |
 | `.claude/docs/preproduction/technical-preferences.md` | Read | Performance budgets to respect while coding |
@@ -27,7 +27,7 @@ Step-skill: implements one system in Unity from its approved GDD. Run by /produc
 
 ## Entry Condition
 
-GDD at `.claude/docs/production/technical-design/<SystemName>.md` must exist and be approved. If missing, call `/regress "Design <SystemName> GDD" "GDD required before coding"`.
+GDD at `.claude/docs/production/gdd/<SystemName>.md` must exist and be approved. If missing, call `/regress "Design <SystemName> GDD" "GDD required before coding"`.
 
 ---
 

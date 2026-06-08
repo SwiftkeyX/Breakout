@@ -17,7 +17,7 @@ Update one or more design docs to reflect a proposed game change. Run this BEFOR
 | `.claude/docs/preproduction/systems-design.md` | Read / Write if system scope changes | System responsibilities and dependencies |
 | `.claude/docs/preproduction/architecture.md` | Read / Write if communication pattern changes | Architecture and communication rules |
 | `.claude/docs/preproduction/best-practices.md` | Read / Write if coding pattern changes | Project-critical code patterns |
-| `.claude/docs/production/technical-design/<System>.md` | Read / Write if system-level detail changes | Per-system GDD: effects, values, types |
+| `.claude/docs/production/gdd/<System>.md` | Read / Write if system-level detail changes | Per-system GDD: effects, values, types |
 | `.claude/rules/collaboration.md` | Read | Routing table for which doc owns which change |
 
 ---
@@ -40,7 +40,7 @@ The user provides a plain-language description of the change they want, e.g.:
 5. Edit the target doc(s) — update tables, tuning knobs, acceptance criteria, or constraint prose as needed. Be surgical: change only what the request covers
    5b. **If `architecture.md` was edited** (communication pattern changed): cascade to these docs in order — do not flag, auto-update:
        - `systems-design.md` — update the "Depends On" entry for every system that gained or lost a connection
-       - `technical-design/<System>.md` for each affected system — update its "Interactions with Other Systems" section and its "Dependencies" section
+       - `gdd/<System>.md` for each affected system — update its "Interactions with Other Systems" section and its "Dependencies" section
 6. Report to the user:
    - What was changed and in which doc(s)
    - Which skill to run next to implement the change in code (e.g. `/fix-bug-right-now`, `/code-system`, `/tuning-loop`)

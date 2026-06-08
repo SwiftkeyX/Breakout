@@ -35,7 +35,7 @@ The ball feels snappy and energetic. Hitting the edge of the paddle sends it rac
 7. When the Ball enters the `DeathZone` trigger (bottom of screen), it calls `GameManager.Instance.OnBallLost()` then starts a respawn coroutine.
 8. After `RESPAWN_DELAY` seconds, if `GameManager.State == Playing`, ball returns to `Waiting` state on the paddle.
 9. BallController is the single owner of effective speed: `EffectiveSpeed = BaseSpeed × _levelMultiplier × _speedModifier`, clamped to `_minSpeed`. `BaseSpeed` is a serialized Inspector field.
-10. The two speed inputs compose and never clobber each other: BrickManager sets the per-level scaling via `SetLevelMultiplier()`, and PowerUpManager sets transient effects (SlowBall) via `SetSpeedModifier()`. Each setter recomputes `_currentSpeed` and re-applies it to the current velocity direction.
+10. The two speed inputs compose and never clobber each other: BrickManager sets the per-level scaling via `SetLevelMultiplier()`, and PowerUpManager sets transient effects (SpeedBoost) via `SetSpeedModifier()`. Each setter recomputes `_currentSpeed` and re-applies it to the current velocity direction.
 11. Launch input reads `Mouse.current` directly and is null-guarded — no mouse device means no launch (no exception).
 
 ### States and Transitions
@@ -52,7 +52,7 @@ The ball feels snappy and energetic. Hitting the edge of the paddle sends it rac
 | `PaddleController` | Reads `transform.position` and `bounds.extents.x` for respawn snap and bounce angle |
 | `GameManager` | Calls `GameManager.Instance.OnBallLost()` on DeathZone entry |
 | `BrickManager` | Calls `SetLevelMultiplier(multiplier)` when loading a new level |
-| `PowerUpManager` | Calls `SetSpeedModifier(factor)` for SlowBall, and `SetSpeedModifier(1f)` on expiry |
+| `PowerUpManager` | Calls `SetSpeedModifier(factor)` for SpeedBoost, and `SetSpeedModifier(1f)` on expiry |
 | Physics engine | `OnCollisionExit2D` fires after every bounce for velocity override |
 
 ---
@@ -92,7 +92,7 @@ if (velocity.magnitude < _minSpeed)
 | Respawn coroutine fires but state = GameOver | Skip GoToWaiting; do nothing | Scene already transitioning |
 | Multiple DeathZone triggers in same frame | Only the first `OnTriggerEnter2D` fires; coroutine already started | Not an issue in practice |
 | No mouse device present (`Mouse.current == null`) | Launch check is skipped; ball stays in `Waiting` | Null-guarded — no NullReferenceException |
-| SlowBall active when a new level loads | Level multiplier and slow modifier compose; both apply | Setters are independent factors, not overwrites |
+| SpeedBoost active when a new level loads | Level multiplier and speed modifier compose; both apply | Setters are independent factors, not overwrites |
 
 ---
 

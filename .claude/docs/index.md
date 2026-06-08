@@ -24,7 +24,7 @@ Before starting work, check the trigger conditions below to find the right doc. 
 
 ## Production
 
-**`production/technical-design/<system>.md`** — per-system GDD
+**`production/gdd/<system>.md`** — per-system GDD
 - Consult when: implementing or modifying a specific system — read that system's file
 
 ## Beta

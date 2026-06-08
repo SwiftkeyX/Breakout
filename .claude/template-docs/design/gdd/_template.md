@@ -163,7 +163,7 @@ result = base_value * modifier
 
 | This Doc References | Target Doc | Element Referenced | Nature |
 |---|---|---|---|
-| *(e.g. "damage feeds score")* | `docs/technical-design/score.md` | `combo_multiplier` output | Data dependency |
+| *(e.g. "damage feeds score")* | `docs/gdd/score.md` | `combo_multiplier` output | Data dependency |
 
 ---
 

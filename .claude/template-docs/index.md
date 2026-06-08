@@ -10,7 +10,7 @@ These files are structural templates for a new project. They contain no project-
 | File | Use | Purpose |
 |---|---|---|
 | `design/systems-design.md` | Copy and fill | System tier table, responsibilities, and dependencies |
-| `design/technical-design/_template.md` | Copy per system | Per-system GDD — copy once for each system, rename to `<system>.md` |
+| `design/gdd/_template.md` | Copy per system | Per-system GDD — copy once for each system, rename to `<system>.md` |
 
 ## Technical
 | File | Use | Purpose |

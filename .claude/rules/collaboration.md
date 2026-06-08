@@ -20,7 +20,7 @@ The doc is the source of truth. Code that diverges from a doc is a bug — not t
 
 | Change type | Doc to edit |
 |---|---|
-| Power-up type, effect, duration, color | `.claude/docs/production/technical-design/power-up-manager.md` |
+| Power-up type, effect, duration, color | `.claude/docs/production/gdd/power-up-manager.md` |
 | Ball / paddle / brick mechanic constraint | `.claude/docs/preproduction/design-decisions.md` |
 | System responsibility or dependencies | `.claude/docs/preproduction/systems-design.md` |
 | Code pattern or best practice | `.claude/docs/preproduction/best-practices.md` |
