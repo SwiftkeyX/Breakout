@@ -7,21 +7,54 @@
 
 ## Communication Patterns
 
-Define how scripts talk to each other. Establish this once and enforce it.
+Scripts communicate via three patterns. The choice of pattern follows from the relationship between systems.
 
-| From | To | Method | Notes |
-|---|---|---|---|
-| BrickManager | GameManager | Direct method call — `GameManager.Instance.OnLevelComplete()` | Called when remaining Brick count reaches zero |
-| Brick | BrickManager | Direct method call — `_manager.OnBrickDestroyed(data, position)` / `OnBrickDamaged()` | Brick reports hits/death up; manager is held via `Init()`, not a singleton |
-| BrickManager | ScoreManager | Direct method call — `ScoreManager.Instance.AddScore(points)` | Awarded on brick death; point value from `BrickData` |
-| BrickManager | PowerUpManager | Direct method call — `TrySpawnDrop(position)` | Manager rolls and spawns the drop on brick death |
-| BrickManager | CameraEffects / ParticlePool / AudioManager | Direct method call | Brick hit/death juice — hitstop, shake, particle burst, SFX |
-| BallController | ScoreManager | — | No direct link; Ball does not score — BrickManager does on destruction |
-| BrickManager | BallController | Direct method call — `SetLevelMultiplier(multiplier)` | Per-level base-speed scaling |
-| PowerUpManager | BallController | Direct method call — `SetSpeedModifier(factor)` | Transient SlowBall scaling; composes with the level multiplier |
-| PaddleController | PowerUpManager | — | PowerUpManager calls into PaddleController to apply/revert size effects |
-| ScoreManager | GameManager | Direct method call — `GameManager.Instance.OnGameOver()` | Called when lives reach zero |
-| ScoreManager | UIManager | C# event — `OnScoreChanged`, `OnLivesChanged` | UIManager updates HUD labels |
-| GameManager | SceneLoader | Direct method call | Scene transitions are always initiated by GameManager |
+---
 
-**Rule**: only the communication methods listed above are permitted. No ad-hoc `Find`/`FindObjectOfType` chains.
+### C# Events — one publisher, many unknown subscribers
+
+**Use when:** a system needs to broadcast a state change but must not know who is listening.
+
+**GameManager → BallController, PowerUpManager, UIManager**
+GameManager fires `OnGameStateChanged` and `OnLivesChanged`. It never imports or references these subscribers — they opt in by subscribing. This keeps GameManager decoupled from every downstream system that reacts to game state.
+
+**BrickManager → CameraEffects, AudioManager**
+BrickManager fires `BrickDestroyed`, `BrickDamaged`, and `LevelCleared`. Camera shake, hit-stop, and audio are observers with no business logic — they have no reason to be hardcoded into BrickManager. Event subscription lets them attach and detach cleanly.
+
+**ScoreManager → UIManager**
+ScoreManager fires `OnScoreChanged`. UI is a pure display layer; ScoreManager should not reference it.
+
+---
+
+### Direct Method Calls — one caller, one known collaborator
+
+**Use when:** the caller has a specific business contract with one target and needs a synchronous result or guaranteed execution order.
+
+**BrickManager → ScoreManager, PowerUpManager, BallController**
+On brick death, BrickManager must award score, attempt a drop, and apply speed scaling — all synchronous, in-order operations with exactly one target each. Direct calls (via serialized refs or singleton) make the contract explicit.
+
+**BrickManager → GameManager** (registration pattern)
+`BrickManager.Start()` calls `GameManager.RegisterBrickManager(this)` so GameManager can subscribe to `LevelCleared`. This one-time handshake solves an Awake/Start ordering race: by Start, all Awake calls are complete and `BrickManager.Instance` is guaranteed to exist.
+
+**GameManager → SceneLoader, ScoreManager**
+GameManager is the sole authority on scene transitions and game resets. Direct calls make the ownership clear — no other system may load scenes or reset score.
+
+**UIManager → GameManager**
+Button callbacks invoke GameManager methods directly. UI drives intent; GameManager owns execution.
+
+---
+
+### Serialized Inspector Injection — tightly coupled pairs
+
+**Use when:** two objects collaborate so closely that loose coupling adds no benefit and a designer needs to wire them in the Inspector.
+
+- `PaddleController` holds a reference to `InputHandler`
+- `BallController` holds a reference to `PaddleController`
+- `BrickManager` holds references to `BallController` and `PowerUpManager`
+- `Brick` receives a `BrickManager` reference via `Init()` on spawn — not the Inspector, but still an injected dependency
+
+---
+
+### Rule
+
+> When adding a new cross-system call: pick the pattern that matches the relationship above. If neither fits cleanly, discuss before implementing — do not use `FindObjectOfType` or static singletons outside the patterns above.
