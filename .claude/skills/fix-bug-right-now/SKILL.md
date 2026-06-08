@@ -37,7 +37,7 @@ User has described a specific thing to fix. `project-snapshot-index.md` must exi
    - What you found in the code (the suspected root cause, with file + line reference)
    - What the fix will change and why
    - What could go wrong or what edge cases the fix might miss
-   Wait for the user to say "go ahead" (or similar) before applying the fix.
+   End with: "**Apply the fix?**" — wait for explicit approval before touching anything.
 5. **Apply the fix** — edit the script file or use `set_property` / `set_transform` / `add_component` / `remove_component` as appropriate
    - One logical change at a time — do not bundle unrelated fixes
 6. **Compile check** — call `check_compile_errors`; fix all errors before continuing

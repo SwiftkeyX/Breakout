@@ -12,7 +12,7 @@ Step-skill: writes technical-preferences.md from the template. Third step in the
 
 | Doc | Read/Write | Purpose |
 |---|---|---|
-| `.claude/template-docs/preproduction/technical-preferences.md` | Read | Required structure and sections |
+| `.claude/template-docs/technical/technical-preferences.md` | Read | Required structure and sections |
 | `.claude/docs/preproduction/technical-preferences.md` | Read (if exists) + Write | Output doc |
 | `.claude/docs/PIPELINE.md` | Read + Write | Tick item on completion |
 | `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
@@ -28,7 +28,7 @@ Phase 1 is active. Template must exist at the path above.
 
 ## Steps
 
-1. Read `.claude/template-docs/preproduction/technical-preferences.md` — note every required section
+1. Read `.claude/template-docs/technical/technical-preferences.md` — note every required section
 2. Read `.claude/docs/preproduction/technical-preferences.md` if it exists — note sections already filled
 3. Ask the user for:
    - Unity version (exact version number)

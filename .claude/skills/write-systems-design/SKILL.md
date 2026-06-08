@@ -14,7 +14,7 @@ Step-skill: writes systems-design.md, listing every game system with its tier an
 |---|---|---|
 | `.claude/docs/preproduction/game-vision.md` | Read | Derive systems from the intended player experience |
 | `.claude/docs/preproduction/design-decisions.md` | Read | Confirm scope before listing systems |
-| `.claude/template-docs/preproduction/systems-design.md` | Read | Required structure |
+| `.claude/template-docs/design/systems-design.md` | Read | Required structure |
 | `.claude/docs/preproduction/systems-design.md` | Read (if exists) + Write | Output doc |
 | `.claude/docs/PIPELINE.md` | Read + Write | Tick item on completion |
 | `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |

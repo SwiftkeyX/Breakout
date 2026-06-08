@@ -13,7 +13,7 @@ Step-skill: writes architecture.md, mapping every system to its script, responsi
 | Doc | Read/Write | Purpose |
 |---|---|---|
 | `.claude/docs/preproduction/systems-design.md` | Read | System list, tiers, and dependencies |
-| `.claude/template-docs/preproduction/architecture.md` | Read | Required structure and communication contract format |
+| `.claude/template-docs/technical/architecture.md` | Read | Required structure and communication contract format |
 | `.claude/docs/preproduction/architecture.md` | Read (if exists) + Write | Output doc |
 | `.claude/docs/PIPELINE.md` | Read + Write | Tick item on completion |
 | `.claude/rules-for-skill/rule-what-to-do-get-block-by-previous-step.md` | Read | When to call /regress instead of patching |
