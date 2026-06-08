@@ -243,14 +243,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerUpManager
   _powerUpPrefab: {fileID: 7910033888727524639, guid: f577c26ad6405da4b97d4141dde1f165, type: 3}
-  _paddle: {fileID: 1746104865}
-  _ball: {fileID: 748639694}
-  _dropChance: 0.3
+  _ballPrefab: {fileID: 2708597769284583639, guid: 38432a8647f475a4c9358ae0a64442be, type: 3}
+  _dropChance: 0.35
   _fallSpeed: 3
-  _expandDuration: 10
-  _expandScaleX: 5
-  _slowDuration: 8
-  _slowMultiplier: 0.6
+  _speedBoostMul: 1.5
+  _speedBoostDur: 5
 --- !u!4 &243042691
 Transform:
   m_ObjectHideFlags: 0

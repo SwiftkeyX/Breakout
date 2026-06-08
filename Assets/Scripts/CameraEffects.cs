@@ -7,6 +7,7 @@ public class CameraEffects : MonoBehaviour
 
     private Vector3 _origin;
     private Coroutine _shakeCoroutine;
+    private float _hitStopEndTime = -1f;
 
     void Awake()
     {
@@ -36,19 +37,22 @@ public class CameraEffects : MonoBehaviour
     private void OnBrickDamaged()                      => HitStop(0.03f);
     private void OnLevelCleared()                      => Shake(0.20f, 0.40f);
 
-    public void HitStop(float seconds) => StartCoroutine(HitStopRoutine(seconds));
+    void Update()
+    {
+        if (Time.timeScale == 0f && Time.unscaledTime >= _hitStopEndTime)
+            Time.timeScale = 1f;
+    }
+
+    public void HitStop(float seconds)
+    {
+        _hitStopEndTime = Time.unscaledTime + seconds;
+        Time.timeScale = 0f;
+    }
 
     public void Shake(float magnitude, float duration)
     {
         if (_shakeCoroutine != null) StopCoroutine(_shakeCoroutine);
         _shakeCoroutine = StartCoroutine(ShakeRoutine(magnitude, duration));
-    }
-
-    private IEnumerator HitStopRoutine(float seconds)
-    {
-        Time.timeScale = 0f;
-        yield return new WaitForSecondsRealtime(seconds);
-        Time.timeScale = 1f;
     }
 
     private IEnumerator ShakeRoutine(float magnitude, float duration)

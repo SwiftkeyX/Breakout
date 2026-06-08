@@ -14,7 +14,12 @@ public class PowerUp : MonoBehaviour
         GetComponent<SpriteRenderer>().color = effect.Color;
     }
 
-    void Update() => transform.Translate(Vector2.down * _speed * Time.deltaTime);
+    void Update()
+    {
+        var pos = transform.position;
+        pos.y -= _speed * Time.deltaTime;
+        transform.position = pos;
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
