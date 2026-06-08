@@ -31,6 +31,10 @@ public class BrickManager : MonoBehaviour
     {
         if (GameManager.Instance == null) { Debug.LogWarning("BrickManager: GameManager.Instance is null."); return; }
         GameManager.Instance.OnGameStateChanged += OnGameStateChanged;
+        // Register with GameManager so it subscribes to LevelCleared here in Start(),
+        // after all Awake() calls have run — fixes the coplay play_game initialization race
+        // where sceneLoaded fired before BrickManager.Awake() set Instance.
+        GameManager.Instance.RegisterBrickManager(this);
         LoadLevel(GameManager.Instance.CurrentLevelIndex);
     }
 

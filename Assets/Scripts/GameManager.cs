@@ -38,12 +38,21 @@ public class GameManager : MonoBehaviour
         UnsubscribeBrickManager();
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    // Called by BrickManager.Start() — guarantees subscription happens after all Awake() calls
+    // so BrickManager.Instance is never null when wiring occurs (fixes coplay play_game race).
+    public void RegisterBrickManager(BrickManager bm)
     {
         UnsubscribeBrickManager();
-        _brickManager = BrickManager.Instance;
+        _brickManager = bm;
         if (_brickManager != null)
             _brickManager.LevelCleared += OnLevelComplete;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Unsubscribe stale reference when a new scene loads; BrickManager.Start()
+        // will call RegisterBrickManager() once its own Awake/Start sequence completes.
+        UnsubscribeBrickManager();
     }
 
     private void OnSceneUnloaded(Scene scene) => UnsubscribeBrickManager();
