@@ -38,7 +38,7 @@ If all Phase 3 items are `[x]`, report "Phase 3 complete." and stop.
 | Juice pass | `/juice-pass` |
 | Feel tuning | `/tuning-loop` |
 | Difficulty tuning | `/tuning-loop` |
-| Bug pass | `/bug-pass` |
+| Bug pass | `/open-session-for-fix-all-bug` |
 | Performance pass | `/performance-pass` |
 | Ship | `/ship` |
 

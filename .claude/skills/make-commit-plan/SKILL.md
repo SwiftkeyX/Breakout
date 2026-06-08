@@ -54,7 +54,7 @@ Examples: `feat(ball): add velocity cap and bounce angle`, `chore(workflow): add
 
 ---
 
-## Step 5 — Present the commit plan
+## Step 5 — Present the commit plan (draft loop)
 
 Before touching anything, display a table:
 
@@ -68,9 +68,25 @@ Before touching anything, display a table:
 Then ask:
 
 > **Proceed with this plan?**
-> Reply: `yes` / `edit N <describe change>` (modify commit N's grouping or message) / `cancel`
+> Reply: `yes` / `edit N <describe change>` / `cancel`
 
-Apply any edits the user requests, re-show the updated table, and ask again before executing.
+This is a **draft loop** — accepted replies and what happens:
+
+| Reply | What happens |
+|---|---|
+| `yes` | Proceed to Step 6 |
+| `edit N <describe change>` | Apply the edit to the plan, re-show the full updated table, ask again — **never proceed to Step 6 without a new explicit `yes`** |
+| `cancel` | Stop. Report "Cancelled — nothing committed." |
+
+**If the user's feedback is about a code or content problem** (not just commit grouping or message wording), do NOT fix it silently or skip it. Ask:
+
+> "That's a code issue, not a commit-plan issue. Do you want to:
+> **a) Fix it now** — I'll make the change, then restart the commit plan from Step 1
+> **b) Commit as-is** — commit what we have now; log the issue and fix it separately"
+
+Wait for the user's answer before doing anything.
+
+**Never proceed to Step 6 without an explicit `yes` on the most recent version of the plan.**
 
 ---
 

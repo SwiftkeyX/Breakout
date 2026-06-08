@@ -1,4 +1,4 @@
-Regression trigger: un-checks a PIPELINE.md item, logs the regression in known-issues.md, then re-routes via /check-pipeline-stage. Called by any step-skill that hits a blocking issue rooted in an earlier stage.
+Internal pipeline tool — called by step-skills, not by the user directly. Un-checks a PIPELINE.md item when a blocking issue requires going back to an earlier stage, logs it in known-issues.md, and re-routes via /check-pipeline-stage. If you want to change something intentionally, use /design-change instead.
 
 ---
 
@@ -40,6 +40,10 @@ Can be called from any stage. No pipeline state prerequisite — regression is a
 
 7. **Write** the updated known-issues.md
 8. **Report** to the user: "Regression logged — `<item>` re-opened. Reason: `<reason>`."
+   Then classify the regression type and state what comes next:
+   - **Bug-level** (implementation was wrong, design intent was correct) → "Run the appropriate fix skill to re-implement: `/fix-bug-right-now` or `/open-session-for-fix-all-bug`."
+   - **Design-level** (the design itself needs to change — mechanic, architecture, or system responsibility) → "Run `/design-change` first to update the docs, then re-implement."
+   If unclear which applies, ask the user before continuing.
 9. **Run** `/check-pipeline-stage` to detect the unchecked item and re-route to the correct orchestrator
 
 ---
