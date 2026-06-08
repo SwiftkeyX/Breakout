@@ -26,3 +26,36 @@ Agent assigned: [subagent_type — task description]
 1. Acknowledge the disagreement
 2. Test or verify immediately (run the tool, check the schema, read the docs)
 3. Update position based on evidence — not based on the user's confidence level
+
+## Declare verification criteria before every implementation task
+
+Before taking any action that changes code, scenes, files, or configuration, output a verification block:
+
+```
+Verification plan:
+- What I'm doing: <one sentence — the specific change>
+- PASS: <observable outcome that confirms the task worked>
+- FAIL: <observable outcome that confirms it did not work or broke something>
+```
+
+After completing the task, close with a result statement:
+
+```
+Result: PASS — <what was observed>
+```
+or
+```
+Result: FAIL — <what was observed and what to try next>
+```
+
+**This rule fires for:**
+- Any edit to a script, scene, config, or doc file
+- Any skill run that produces changes (`/fix-bug-right-now`, `/open-session-for-fix-all-bug`, `/production-task`, etc.)
+- Any MCP tool call that modifies state (`set_property`, `add_component`, `execute_script`, etc.)
+
+**This rule does NOT fire for:**
+- Conversational answers (no changes made)
+- Read-only research (Explore agents, doc reads, planning)
+- `/log-bug` (logging only, no fix)
+
+**If the task is ambiguous enough that a concrete PASS criterion cannot be stated, ask the user to define it before starting — do not invent one.**
