@@ -6,10 +6,10 @@
 
 | Field | Value |
 |---|---|
-| **Unity version** | *(e.g. 6000.0.47f1)* |
-| **Render pipeline** | *(e.g. URP, Built-in)* |
-| **Target platform(s)** | *(e.g. Windows, WebGL, Android)* |
-| **Min OS / browser** | *(e.g. Windows 10, Chrome 120)* |
+| **Unity version** | 6000.4.9f1 |
+| **Render pipeline** | URP |
+| **Target platform(s)** | Windows |
+| **Min OS / browser** | Windows 11 |
 
 ## Build Steps
 
@@ -21,9 +21,9 @@
 
 ## Release Checklist
 
-- [ ] All compile errors resolved
-- [ ] Play Mode smoke test passed (main loop, win, lose)
-- [ ] Performance pass done (stable frame rate, no GC spikes)
+- [x] All compile errors resolved
+- [x] Play Mode smoke test passed (main loop, win, lose)
+- [x] Performance pass done (stable frame rate, no GC spikes)
 - [ ] Build runs on target device / browser
 - [ ] Version number bumped in Player Settings
 - [ ] Changelog entry added
